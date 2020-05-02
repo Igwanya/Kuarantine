@@ -11,7 +11,7 @@ namespace Src\database;
 
 class DatabaseConnection
 {
-    private $APP_DB_NAME = 'guari';   // remember to change the connection properties in mysqli.
+    private $APP_DB_NAME = 'cat2';   // remember to change the connection properties in mysqli.
     
     public $APP_DB_USERS_TABLE = 'users';
 
@@ -30,7 +30,7 @@ class DatabaseConnection
      */
     public function get_db_connection()
     {
-        $mysqli = new \mysqli('127.0.0.1', "root", "", "guari", 3306);
+        $mysqli = new \mysqli('127.0.0.1', "root", "", $this->APP_DB_NAME, 3306);
         if ($mysqli->connect_errno) {
             trigger_error("Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error,
                 E_USER_ERROR);
