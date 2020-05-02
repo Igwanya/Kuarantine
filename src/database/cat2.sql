@@ -71,6 +71,21 @@ VALUES
  CURRENT_TIMESTAMP,
  CURRENT_TIMESTAMP);
 
+# Create the app table
+#
+CREATE TABLE IF NOT EXISTS `app` (
+`appID` INT auto_increment primary key,
+`app_version` varchar(50) NULL,
+`model`     varchar(50) NULL,
+`user`      varchar(70) NULL,
+`api_level` varchar(70) NULL,
+`screen_resolution` varchar(70) NULL,
+`screen_density` varchar(70) NULL
+);  
+
+select * from `app`;
+DROP TABLE IF EXISTS `app`;
+
 
 # Shift + delete everything
 #
