@@ -33,3 +33,5 @@
 logs/
 
 public_html/res/vendor
+src/database/guari.sql
+src/database/scratch.sql
