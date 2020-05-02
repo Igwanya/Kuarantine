@@ -42,12 +42,8 @@ switch ($requestMethod)
         $post_id = filter_input(INPUT_GET, 'ID' );
         if (isset($post_id))
         {
-            $post_id = filter_var($post_id, FILTER_VALIDATE_INT, [
-                'options' => [
-                    'default'   => 'all_posts',
-                    'min_range' => 1
-                ]
-            ]);
+            $post_id = filter_var($post_id, FILTER_VALIDATE_INT);
+//            TODO:: read posts by author
             echo json_encode($repository->read_post($post_id));
         } else {
             echo json_encode($repository->read_all_posts());
@@ -57,46 +53,44 @@ switch ($requestMethod)
         /**
          * Perform insert ops
          */
-        if ($uri[4] == 'insert')
-        {
-            // GET DATA FORM REQUEST
-            $data = json_decode(file_get_contents("php://input"));
-            $result = array(
-                "message"  => "",
-                "error"    => null
-            );
-            // CHECK IF RECEIVED DATA FROM THE REQUEST
-            if(isset($data->title) && isset($data->body) && isset($data->author)){
-                // CHECK DATA VALUE IS EMPTY OR NOT
-                if(!empty($data->title) && !empty($data->body) && !empty($data->author)){
-                    echo json_encode(
-                        $repository->add_post(
-                            htmlspecialchars(strip_tags($data->title)),
-                            htmlspecialchars(strip_tags($data->body)),
-                            htmlspecialchars(strip_tags( $data->author)))
-                    );
-                    break;
-                } else {
-                    header($_SERVER["SERVER_PROTOCOL"]."  404 not found.");
-                    $result['message'] = "Empty fields detected. Please fill all the fields | title, body, author";
-                    echo json_encode($result);
-                    break;
-                }
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => ""
+        );
+        // GET DATA FORM REQUEST
+        $data = json_decode(file_get_contents("php://input"));
+        // CHECK IF RECEIVED DATA FROM THE REQUEST
+        if(isset($data->headline) && isset($data->content) && isset($data->userID)){
+            // CHECK DATA VALUE IS EMPTY OR NOT
+            if(!empty($data->headline) && !empty($data->content)
+                && !empty($data->userID)){
+                echo json_encode(
+                    $repository->add_post(
+                        htmlspecialchars(strip_tags($data->headline)),
+                        htmlspecialchars(strip_tags($data->content)),
+                        htmlspecialchars(strip_tags( $data->userID)))
+                );
+                break;
             } else {
                 header($_SERVER["SERVER_PROTOCOL"]."  404 not found.");
-                $result['message'] = "Please fill all the fields | title, body, author";
+                $result['status'] = "Empty fields detected. Please fill all the fields | headline, content, userID";
                 echo json_encode($result);
                 break;
             }
+        } else {
+            header($_SERVER["SERVER_PROTOCOL"]."  404 not found.");
+            $result['status'] = "Please fill all the fields | headline, content, userID";
+            echo json_encode($result);
+            break;
         }
         break;
     case 'PUT':
         /**
-         * Update a post
-         * todo: needs to rechecked again
+         * Update an Article
          */
         $data = json_decode(file_get_contents("php://input"));
-        echo json_encode($repository->update_post($data->id, $data->title, $data->body));
+        echo json_encode($repository->update_post($data->articleID, $data->headline, $data->content, $data->userID));
         break;
     case 'DELETE':
         $data = json_decode(file_get_contents("php://input"));
