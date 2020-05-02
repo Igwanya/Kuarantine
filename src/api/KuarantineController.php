@@ -8,6 +8,8 @@
 
 namespace Src\api;
 
+use Src\Repository;
+
 require_once __DIR__ . '../../../vendor/autoload.php';
 
 session_start();
@@ -23,18 +25,49 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 $requestMethod = $_SERVER["REQUEST_METHOD"];
 switch ($requestMethod){
     case 'GET':
-        $result = array(
-            "status" => "Welcome to the Kuarantine app",
-            "body"   => array(
-                "app" => array(
-                    "os_version"           => "4.1",
-                    "terms_and_conditions" => false ,
-                    "build_version"        => "0.0.1"
-                )
-            ),
-            "error"  => array()
-        );
-        echo json_encode($result);
+        $repository = new Repository();
+        $id = filter_input(INPUT_GET, 'ID');
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+        if (!empty($id)){
+            echo json_encode($repository->read_app_data_by_id($id));
+        }else {
+            echo json_encode($repository->read_app_data());
+        }
+
+        break;
+    case 'POST':
+        $repository = new Repository();
+        $data = json_decode(file_get_contents("php://input"));
+        if (
+            isset($data->app_version) && isset($data->model) && isset($data->user)
+            && isset($data->api_level) && isset($data->screen_resolution) && isset($data->screen_density)
+        ){
+            echo json_encode($repository->insert_app_data($data->app_version, $data->model,
+                $data->user, $data->api_level, $data->screen_resolution, $data->screen_density));
+
+        } else{
+            http_response_code(404);
+        }
+        break;
+    case 'PUT':
+        $repository = new Repository();
+        $data = json_decode(file_get_contents("php://input"));
+        if (
+            isset($data->appID) && isset($data->app_version) && isset($data->model) && isset($data->user)
+            && isset($data->api_level) && isset($data->screen_resolution) && isset($data->screen_density)
+        ){
+            echo json_encode($repository->update_app_data($data->appID,$data->app_version, $data->model,
+                $data->user, $data->api_level, $data->screen_resolution, $data->screen_density));
+        } else{
+            http_response_code(404);
+        }
+        break;
+    case 'DELETE':
+        $repository = new Repository();
+        $data = json_decode(file_get_contents("php://input"));
+        if (isset($data->appID)){
+            echo json_encode($repository->delete_app_data($data->appID));
+        }
         break;
     default:
         echo json_encode(array("status" => "Welcome to the Kuarantine app"));
