@@ -1,0 +1,23 @@
+<VirtualHost *:80>
+    ServerAdmin felixmuthui32@gmail.com
+    DocumentRoot "D:/PHP/www.reelgood.com"
+	ServerName muthui.reelgood.com
+    ServerAlias www.reelgood.com
+	<Directory "D:/PHP/www.reelgood.com">
+		DirectoryIndex index.php
+		Require all granted
+		AllowOverride AuthConfig
+		Options +Includes
+		# Custom error pages
+		# location :: public_html/partials/error_pages/
+		ErrorDocument 400 /public_html/partials/error_pages/400.html
+		ErrorDocument 401 /public_html/partials/error_pages/401.html
+		ErrorDocument 403 /public_html/partials/error_pages/403.html
+		ErrorDocument 404 /public_html/partials/error_pages/404.html
+		ErrorDocument 500 /public_html/partials/error_pages/500.html
+		ErrorDocument 502 /public_html/partials/error_pages/502.html
+		ErrorDocument 504 /public_html/partials/error_pages/504.html
+	</Directory>
+    ErrorLog "D:/PHP/www.reelgood.com/logs/muthu-error.log"
+    CustomLog "D:/PHP/www.reelgood.com/logs/muthui-access.log" common
+</VirtualHost>

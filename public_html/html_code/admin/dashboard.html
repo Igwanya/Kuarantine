@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="felixmuthui32@gmail.com">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="msapplication-tap-highlight" content="no">
+	<meta name="msapplication-tap-highlight" content="no">
+	<link href="../../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+	<link href="../../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
+	<link href="../../res/css/main.css?lastModified=Sun, 05 Apr 2020 08:32:00 GMT" rel="stylesheet"  media="screen,projection">
+	<link href="../../res/vendor/fontawesome/css/all.css" rel="stylesheet"/>
+	<title>Dashboard</title>
+	<style>
+		header, main, footer {
+      padding-left: 300px;
+    }
+
+    @media only screen and (max-width : 992px) {
+      header, main, footer {
+        padding-left: 0;
+      }
+    }
+	</style>
+</head>
+<body>
+	<!-- Navbar-->
+<header>
+	<div class="navbar-fixed">
+    <nav>
+      <div class="nav-wrapper">
+				<a href="#!" data-target="sidenav-left" class="sidenav-trigger left">
+					<i class="material-icons black-text">menu</i></a>
+				<a href="/pages/admin-dashboard" class="logo-container">Admin<i class="material-icons left">spa</i></a>
+        <ul class="right hide-on-med-and-down">
+					<li class="hide-on-med-and-down">
+						<a href="#!" data-target="dropdown1" class="dropdown-trigger waves-effect">
+							<i class="material-icons">notifications</i></a></li>
+					<li>
+						<a href="#!" data-target="chat-dropdown" class="dropdown-trigger waves-effect">
+							<i class="material-icons">settings</i></a></li>
+				</ul>
+      </div>
+    </nav>
+  </div>
+	<ul id="sidenav-left" class="sidenav sidenav-fixed">
+		<li>
+			<div class="user-view">
+      <div class="background">
+        <img src="../../res/img/Trippy.jpg">
+      </div>
+				<a href="#user"><img class="circle" src="../../res/img/free_spirit.jpg"></a>
+				<a href="#name"><span class="white-text name">John Doe</span></a>
+				<a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+		</div></li>
+		<li class="no-padding">
+			<ul class="collapsible collapsible-accordion">
+				
+				<!-- User account navigation -->
+				<li class="bold waves-effect">
+					<div class="collapsible-header">Account<i class="material-icons chevron">chevron_left</i></div>
+					<div class="collapsible-body">
+						<ul >
+							<li><a href="/pages/admin-log-in" class="waves-effect">Log In<i class="material-icons">person</i></a></li>
+							<li><a href="/pages/admin-settings" class="waves-effect">Settings<i class="material-icons">settings</i></a></li>
+						</ul>
+					</div>
+				</li>
+
+			</ul>	
+		</li>
+	</ul>
+
+	<div id="dropdown1" class="dropdown-content notifications">
+		<div class="notifications-title">notifications</div>
+		<div class="card">
+			<div class="card-content"><span class="card-title">Joe Smith made a purchase</span>
+				<p>Content</p>
+			</div>
+			<div class="card-action"><a href="#!">view</a><a href="#!">dismiss</a></div>
+		</div>
+		<div class="card">
+			<div class="card-content"><span class="card-title">Daily Traffic Update</span>
+				<p>Content</p>
+			</div>
+			<div class="card-action"><a href="#!">view</a><a href="#!">dismiss</a></div>
+		</div>
+		<div class="card">
+			<div class="card-content"><span class="card-title">New User Joined</span>
+				<p>Content</p>
+			</div>
+			<div class="card-action"><a href="#!">view</a><a href="#!">dismiss</a></div>
+		</div>
+	</div>
+	<div id="chat-dropdown" class="dropdown-content dropdown-tabbed">
+		<ul class="tabs tabs-fixed-width">
+			<li class="tab col s3"><a href="#settings">Settings</a></li>
+			<li class="tab col s3"><a href="#friends" class="active">Friends</a></li>
+		</ul>
+		<div id="settings" class="col s12">
+			<div class="settings-group">
+				<div class="setting">Night Mode
+					<div class="switch right">
+						<label>
+							<input type="checkbox"><span class="lever"></span>
+						</label>
+					</div>
+				</div>
+				<div class="setting">Beta Testing
+					<label class="right">
+						<input type="checkbox"><span></span>
+					</label>
+				</div>
+			</div>
+		</div>
+		<div id="friends" class="col s12">
+			<ul class="collection flush">
+				<li class="collection-item avatar">
+					<div class="badged-circle online"><img src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/portrait1.jpg?v=1218798423999129079" alt="avatar" class="circle"></div><span class="title">Jane Doe</span>
+					<p class="truncate">Lo-fi you probably haven't heard of them</p>
+				</li>
+				<li class="collection-item avatar">
+					<div class="badged-circle"><img src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/portrait2.jpg?v=15342908036415923195" alt="avatar" class="circle"></div><span class="title">John Chang</span>
+					<p class="truncate">etsy leggings raclette kickstarter four dollar toast</p>
+				</li>
+				<li class="collection-item avatar">
+					<div class="badged-circle"><img src="//cdn.shopify.com/s/files/1/1775/8583/t/1/assets/portrait3.jpg?v=4679613373594475586" alt="avatar" class="circle"></div><span class="title">Lisa Simpson</span>
+					<p class="truncate">Raw denim fingerstache food truck chia health goth synth</p>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+</header>
+<main>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-3" style="background-color: red;">
+				One of three columns
+			</div>
+			<div class="col-sm-9" style="background-color: blue;">
+				One of three columns
+			</div>
+		</div>
+	</div>
+</main>
+
+
+
+<footer class="page-footer teal">
+	<div class="container">
+		<div class="row">
+			<div class="col l6 s12">
+				<h5 class="white-text">Company Bio</h5>
+				<p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
+
+
+			</div>
+			<div class="col l3 s12">
+				<h5 class="white-text">Settings</h5>
+				<ul>
+					<li><a class="white-text" href="#!">Link 1</a></li>
+					<li><a class="white-text" href="#!">Link 2</a></li>
+					<li><a class="white-text" href="#!">Link 3</a></li>
+					<li><a class="white-text" href="#!">Link 4</a></li>
+				</ul>
+			</div>
+			<div class="col l3 s12">
+				<h5 class="white-text">Connect</h5>
+				<ul>
+					<li><a class="white-text" href="#!">Link 1</a></li>
+					<li><a class="white-text" href="#!">Link 2</a></li>
+					<li><a class="white-text" href="#!">Link 3</a></li>
+					<li><a class="white-text" href="#!">Link 4</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="footer-copyright">
+		<div class="container">
+		Made by <a class="brown-text text-lighten-3" href="http://materializecss.com">Materialize</a>
+		</div>
+	</div>
+</footer>
+
+
+<!--  Scripts-->
+<script src="../../res/vendor/jquery-3.4.1.js"></script>
+<script src="../../res/vendor/popper.min.js"></script>
+<script src="../../res/vendor/jquery.mobile-1.4.5.js"></script>
+<script src="../../res/vendor/materialize/js/materialize.js"></script>
+<script src="../../res/js/init.js?lastModified=Sun, 05 Apr 2020 08:32:00 GMT"></script>
+</body>
+</html>

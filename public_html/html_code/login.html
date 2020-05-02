@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="felixmuthui32@gmail.com">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="msapplication-tap-highlight" content="no">
+  <link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
+  <link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+  <link href="../res/css/main.css?lastModified=Sun, 05 Apr 2020 08:32:00 GMT" rel="stylesheet"  media="screen,projection">
+  <link href="../res/vendor/fontawesome/css/all.css" rel="stylesheet"/>
+  <title>Login</title>
+</head>
+<body>
+  <div class="">
+    <div class="row">
+      <div class="col s4"></div>
+      <div class="col s4">
+        <form action="../../src/Login.php" method="POST" class="form" id="loginForm">
+            <fieldset id="loginFormFieldset">
+                <legend id="loginFormLegend">Restricted Access</legend>
+                <div class="input-field">
+                    <input id="inputCredentials" type="text" class="validate" name="inputCredentials">
+                    <label for="inputCredentials" id="labelInputCredentials">Username or Email</label>
+                    <span class="helper-text" id="loginFormCredentialsHelper" data-error="wrong" data-success="right">
+                        <?php
+                            echo "Header list";
+                        ?>
+                    </span>
+                </div>
+                <div class="input-field">
+                  <input id="inputPassword" type="password" class="validate" name="inputLoginPassword">
+                  <label for="inputPassword" id="labelInputPassword" >Password</label>
+                  <span class="helper-text" id="loginFormPasswordHelper" data-error="wrong" data-success="right">Required*</span>
+                </div>
+                <div class="input-field right-align">
+                  <input type="submit" id="inputSubmit" class="btn" />
+                </div>
+                <div>
+                <span class="" id="loginFormSocialsText">
+                    <p class="center">
+                      or sign in with socials
+                    </p>
+                </span>
+                <div class="" id="loginFormSocials">
+                  <p class="center">
+                    <a href="#" class="left-align" id="loginFormFacebooklink">
+                      <i class="fa fa-facebook-square fa-2x"></i>  Facebook
+                    </a>
+                    <a href="#" class="right-align" id="loginFormGoogleLink">
+                        <i class="fa fa-google fa-2x"></i>  Google
+                    </a>
+                  </p>
+                </div>
+                </div>
+                <div id="loginFormRedirect">
+                    <a href="password_reset.html" id="loginFormPasswordReset" class="left left-align">Forgot password ?</a>
+                    <a href="register.html" id="loginFormRegister" class="right right-align">Create an account.</a>
+                </div>
+            </fieldset>   
+        </form>
+      </div>
+      <div class="col s4"></div>
+    </div>
+  </div>
+<script type="text/javascript" src="../res/vendor/jquery-3.4.1.js"></script>
+<script type="text/javascript" src="../res/vendor/popper.min.js"></script>
+<script type="text/javascript" src="../res/vendor/jquery.mobile-1.4.5.js"></script>
+<script type="text/javascript" src="../res/vendor/materialize/js/materialize.js"></script>
+<script type="text/javascript" src="../res/vendor/fontawesome/js/all.js"></script>
+<script type="text/javascript" src="../res/js/init.js"></script> 
+</body>
+</html>

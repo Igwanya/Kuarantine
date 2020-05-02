@@ -1,0 +1,122 @@
+# Change the index directive
+DirectoryIndex index.php public_html/index.html
+
+# Custom error pages
+# location :: public_html/partials/error_pages/
+ErrorDocument 400 public_html/partials/error_pages/400.html
+ErrorDocument 401 public_html/partials/error_pages/401.html
+ErrorDocument 403 public_html/partials/error_pages/403.html
+ErrorDocument 404 public_html/partials/error_pages/404.html
+ErrorDocument 500 public_html/partials/error_pages/500.html
+ErrorDocument 502 public_html/partials/error_pages/502.html
+ErrorDocument 504 public_html/partials/error_pages/504.html
+
+# Remove www prefix on the domain
+# 
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_HOST} ^www.yourdomain.com [NC]
+RewriteRule ^(.*)$ http://yourdomain.com/$1 [L,R=301]
+
+# Timezone directive
+SetEnv TZ Africa/Nairobi
+
+# Email address for the server administrator
+#
+ServerSignature EMail
+SetEnv SERVER_ADMIN felxmuthui32@gmail.com
+
+# 301 permernent redirects
+#
+# Redirect 301 /olddirectory/file.html http://www.domainname.com/newdirectory/file.html
+
+# Detecting tablets and redirecting
+# If you would like to redirect tablet-based users to a particular web page or directory,
+#
+# RewriteCond %{HTTP_USER_AGENT} ^.*iPad.*$
+# RewriteRule ^(.*)$ http://yourdomain.com/folderfortablets [R=301]
+# RewriteCond %{HTTP_USER_AGENT} ^.*Android.*$
+# RewriteRule ^(.*)$ http://yourdomain.com/folderfortablets [R=301]
+
+# Link Protection
+# Concerned about hotlinking or simply want to reduce your bandwidth usage? Try experimenting with:
+# Options +FollowSymlinks
+# RewriteEngine On
+# RewriteCond %{HTTP_REFERER} !^$
+# RewriteCond %{HTTP_REFERER} !^http://(www.)?domainname.com/ [nc]
+# RewriteRule .*.(gif|jpg|png)$ http://domainname.com/img/hotlink_f_o.png [nc]
+
+# Force “File Save As”
+# If you would like force users to download files rather than view them in the browser you could use:
+# AddType application/octet-stream .csv
+# AddType application/octet-stream .xls
+# AddType application/octet-stream .doc
+# AddType application/octet-stream .avi
+# AddType application/octet-stream .mpg
+# AddType application/octet-stream .mov
+# AddType application/octet-stream .pdf
+#
+# or
+# AddType application/octet-stream .avi .mpg .mov .pdf .xls .mp4
+
+# Rewrite URLs
+# If you would like to make your URLs a little easier to read (ie changing content.php?id=92 to content-92.html) you could implement the following ‘rewrite’ rules:
+#
+# RewriteEngine on
+# RewriteRule ^content-([0-9]+).html$ content.php?id=$1
+
+# Redirect Browser to https
+# This is always useful for those who have just installed an SSL certificate:
+#
+# RewriteEngine On
+# RewriteCond %{HTTPS} !on
+# RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
+# Disable or Enable Directory browsing
+## disable directory browsing
+#Options All -Indexes
+## enable directory browsing
+Options All +Indexes
+
+# Change the Charset and Language headers
+# For those who want to change the current character set and language for a specific directory use:
+#
+# AddDefaultCharset UTF-8
+# DefaultLanguage en-GB
+
+# Block Unwanted Referrals
+#If you want to block unwanted visitors from a particular website or range of websites you could use:
+#
+#<IfModule mod_rewrite.c>
+# RewriteEngine on
+# RewriteCond %{HTTP_REFERER} website1.com [NC,OR]
+# RewriteCond %{HTTP_REFERER} website2.com [NC,OR]
+# RewriteRule .* - [F]
+#</ifModule>
+
+# Block Unwanted User Agents
+  #With the following method, you could save your bandwidth by blocking certain bots or spiders from trawling your website:
+#
+#<IfModule mod_rewrite.c>
+#SetEnvIfNoCase ^User-Agent$ .*(bot1|bot2|bot3|bot4|bot5|bot6|) HTTP_SAFE_BADBOT
+#SetEnvIfNoCase ^User-Agent$ .*(bot1|bot2|bot3|bot4|bot5|bot6|) HTTP_SAFE_BADBOT
+#Deny from env=HTTP_SAFE_BADBOT
+#</ifModule>
+
+# Block Access to a Comprehensive Range of Files
+#If you want to protect particular files, or even block access to the .htaccess file, try customising the following code:
+#
+#<Files privatefile.jpg>
+# order allow,deny
+# deny from all
+#</Files>
+#
+<FilesMatch ".(htaccess|htpasswd|ini|phps|fla|psd|log|sh)$">
+ Order Allow,Deny
+ Deny from all
+</FilesMatch>
+
+
+# For reasons of security alone, I think the chance to rename the .htaccess file is very useful:
+#
+# AccessFileName ht.access

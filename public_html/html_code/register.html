@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="felixmuthui32@gmail.com">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-tap-highlight" content="no">
+    <!--    css -->
+    <link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
+    <link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+    <link href="../res/css/main.css?lastModified=Sat, 04 Apr 2020 20:35:37 GMT" rel="stylesheet"  media="screen,projection">
+    <link href="../res/vendor/fontawesome/css/all.css" rel="stylesheet"/>
+    <script type="text/javascript" src="../res/vendor/fontawesome/js/all.js"></script>
+    <title>sign up</title>
+</head>
+<body>
+<div class="">
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <form action="../../src/Register.php" method="POST" class="">
+                <fieldset>
+                    <legend>Register</legend>
+                    <div class="input-field">
+                        <input id="inputUsername" type="text" name="username" class="validate">
+                        <label for="inputUsername">Username</label>
+                        <span class="helper-text" data-error="wrong" data-success="right">Required*</span>
+                    </div>
+                    <div class="input-field">
+                        <input id="inputEmail" type="email" name="email" class="validate">
+                        <label for="inputEmail">Email</label>
+                        <span class="helper-text" data-error="wrong" data-success="right">Required*</span>
+                    </div>
+                    <div class="input-field">
+                        <input id="inputFirstName" type="text" name="first_name" class="validate">
+                        <label for="inputFirstName">First name</label>
+                        <span class="helper-text" data-error="wrong" data-success="right">Required*</span>
+                    </div>
+                    <div class="input-field">
+                        <input id="inputLastName" type="text" name="last_name" class="validate">
+                        <label for="inputLastName">Last name</label>
+                        <span class="helper-text" data-error="wrong" data-success="right">Required*</span>
+                    </div>
+                    <div class="input-field">
+                        <input id="inputNewPassword" type="password" class="validate">
+                        <label for="inputNewPassword" id="labelInputNewPassword">Password</label>
+                        <span class="helper-text" data-error="wrong" data-success="right">Required*</span>
+                    </div>
+                    <div class="input-field">
+                        <input id="inputPassword" type="password" name="password" class="validate">
+                        <label for="inputPassword">Confirm Password</label>
+                        <span class="helper-text" data-error="wrong" data-success="right">Required*</span>
+                    </div>
+                    <div>
+                        <label>
+                            <input type="checkbox" class="filled-in" checked="checked" />
+                            <span>Accept terms and Conditions</span>
+                        </label>
+                    </div>
+                    <div class="input-field right-align">
+                        <input type="submit" id="inputSubmit" class="btn" />
+                    </div>
+                    <div class="center">
+                        <p>
+                            Read our<a href="#"> Terms and Conditions </a> and <a href="#"> Privacy Agreement </a>.
+                        </p>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+        <div class="col-4"></div>
+    </div>
+</div>
+</body>
+</html>
