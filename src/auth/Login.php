@@ -108,13 +108,13 @@ class Login{
             $this->login_frm_inputs['id']           = $row['id'];
             $this->login_frm_inputs['email']        = $row['email'];
             $this->login_frm_inputs['username']     = $row['username'];
-            $this->login_frm_inputs['first_name']   = $row['first_name'];
-            $this->login_frm_inputs['last_name']    = $row['last_name'];
-            $this->login_frm_inputs['is_admin']     = $row['is_admin'];
+            $this->login_frm_inputs['first_name']   = $row['firstName'];
+            $this->login_frm_inputs['last_name']    = $row['lastName'];
+            $this->login_frm_inputs['is_admin']     = $row['isAdmin'];
             $this->login_frm_inputs['created']      = $row['created'];
-            $this->login_frm_inputs['last_updated'] = $row['last_updated'];
-            $this->login_frm_inputs['password'] = $row['password_hash'];
-            $_SESSION['is_admin']               = $row['is_admin'];
+            $this->login_frm_inputs['last_updated'] = $row['lastUpdated'];
+            $this->login_frm_inputs['password']     = $row['passwordHash'];
+            $_SESSION['is_admin']                   = $row['isAdmin'];
             $this->login_frm_inputs_errors['credentials_error'] = "";
         } else {
             $this->login_frm_inputs_errors['credentials_error'] = 'Invalid email address';
@@ -143,13 +143,13 @@ class Login{
             $this->login_frm_inputs['id']           = $row['id'];
             $this->login_frm_inputs['username']     = $row['username'];
             $this->login_frm_inputs['email']        = $row['email'];
-            $this->login_frm_inputs['first_name']   = $row['first_name'];
-            $this->login_frm_inputs['last_name']    = $row['last_name'];
-            $this->login_frm_inputs['is_admin']     = $row['is_admin'];
+            $this->login_frm_inputs['first_name']   = $row['firstName'];
+            $this->login_frm_inputs['last_name']    = $row['lastName'];
+            $this->login_frm_inputs['is_admin']     = $row['isAdmin'];
             $this->login_frm_inputs['created']      = $row['created'];
-            $this->login_frm_inputs['last_updated'] = $row['last_updated'];
-            $this->login_frm_inputs['password']     = $row['password_hash'];
-            $_SESSION['is_admin']                   = $row['is_admin'];
+            $this->login_frm_inputs['last_updated'] = $row['lastUpdated'];
+            $this->login_frm_inputs['password']     = $row['passwordHash'];
+            $_SESSION['is_admin']                   = $row['isAdmin'];
             $this->login_frm_inputs_errors['credentials_error'] = "";
         } else {
             $this->login_frm_inputs_errors['credentials_error'] = 'No user with that username exists. ';
