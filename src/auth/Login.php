@@ -69,8 +69,7 @@ class Login{
 
     // Database connection handle
     private $conn;
-
-
+    
     /**
      * Login constructor.
      */
@@ -200,10 +199,21 @@ class Login{
     }
 
     public function perform_login(){
-        $_SESSION['is_authenticated'] = true;
-        echo "Redirecting to profile page: ";
-        $this->redirect_to_profile_page();
+        $result = array(
+            "status" => false,
+            "error"  => ""
+        );
+        if (empty($this->perform_username_or_email_check()) &&
+            empty($this->perform_password_check()) )  {
+            $_SESSION['is_authenticated'] = true;
+            $result["status"]  = true;
+            $this->redirect_to_profile_page();
+        } else {
+            $result["status"]  = false;
+            $result["error"] = "Login process halted ";
+        }
 //        header("Location: http://www.reelgood.com/public_html/login.php",FALSE,200);
+        return $result;
     }
 
     /**
