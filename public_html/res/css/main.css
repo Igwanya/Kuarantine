@@ -33,14 +33,30 @@ nav#indexNav a
     text-transform: uppercase;
     font-size: 13px;
 }
-
+nav#indexNav a#indexNavLinkFeatured
+{
+    color: #444444;
+    font-weight: bold;
+    font-style: normal;
+}
+nav#indexNav a#indexNavLinkProducts
+{
+    color: #444444;
+    font-weight: bold;
+    font-style: normal;
+}
+nav#indexNav a#indexNavLinkArticles
+{
+    color: #444444;
+    font-weight: bold;
+    font-style: normal;
+}
 nav#indexNav a#indexNavLinkAbout
 {
     color: #444444;
     font-weight: bold;
     font-style: normal;
 }
-
 nav#indexNav a#indexNavLinkContact
 {
     color: #444444;
@@ -59,6 +75,15 @@ nav#indexNav a#indexLinkRegister
     color: #444444;
     font-weight: bold;
     font-style: normal;
+}
+nav#indexNav a#indexLinkProfile
+{
+    color: black;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-style: normal;
+    font-family: sans-serif;
+    text-align: left;
 }
 
 .sidenav-trigger {
@@ -369,5 +394,11 @@ form#registerForm input#inputTermsAndConditions
 {
     margin-bottom: 12px;
 }
+/**
+* Profile page decorations.
+*/
+nav#profileNav li#navProfileLink {
+    color: black;
 
+}
 
