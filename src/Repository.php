@@ -117,6 +117,7 @@ class Repository
                 "created"      => $row["created"],
                 "lastUpdated"  => $row["lastUpdated"],
             );
+            return $result;
         } else {
             $result['status'] = "No user with that id exists";
             $result["error"]  =  $stmt->error;
@@ -162,62 +163,74 @@ class Repository
     }
 
     /**
-     * @param $id user id
-     * @param &$user User model object.
-     * @return int If the operation succeeds
-     * TODO:: needs more work and am bored right now ;)
+     * @param $id
+     * @param $username
+     * @param $email
+     * @param $first_name
+     * @param $last_name
+     * @return array
      */
-    public function update_user_to_db($id, &$user)
+    public function update_user_to_db($id, $username, $email, $first_name, $last_name)
     {
-        try {
-            /* Prepared statement, stage 1: prepare */
-            if (!($stmt = $this->db->prepare(
-                "
-            UPDATE users SET
-            (
-             username=:username, email=:email, first_name=:first_name, last_name=:last_name, 
-             is_admin=:is_admin, password_hash=:password_hash, created=:created, last_updated=:last_updated
-            )  WHERE id:=id"
-            ))) {
-                trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
-            }
-            /* Prepared statement, stage 2: bind and execute */
-            if (!$stmt->execute()) {
-                trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
-            }
-            return $stmt->num_rows;
-        } catch (\PDOException $exception) {
-            trigger_error($exception->getMessage());
-            exit($exception->getMessage());
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => ""
+        );
+        $sql = "UPDATE users SET username=?, email=?, firstName=?, lastName=?, lastUpdated=?  WHERE id=?";
+        $lastUpdated = date("Y-m-d");
+        /* Prepared statement, stage 1: prepare */
+        if (!$stmt = $this->db->prepare($sql)){
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
         }
-        return 0;
+        if (!$stmt->bind_param("sssssi",$username,$email,
+            $first_name, $last_name,$lastUpdated, $id)){
+            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
+            }
+        /* Prepared statement, stage 2: bind and execute */
+        if (!$stmt->execute()) {
+            $result["body"] = null;
+            $result["error"] =  $stmt->error;
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        } else{
+            $result["status"] = "Update successful";
+            $result["body"] = null;
+            $result["error"] =  null;
+        }
+
+        return $result;
     }
-    
+
     /**
-     * Delete from the database a user with a given email.
      * @param $user_id
-     * @return int
+     * @return array
      */
     public function delete_user_from_db($user_id)
     {
-        try {
-            /* Prepared statement, stage 1: prepare */
-            if (!($stmt = $this->db->prepare("DELETE FROM users WHERE id LIKE ?"))) {
-                trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
-            }
-            /* Prepared statement, stage 2: bind and execute */
-            if (!$stmt->bind_param("s", $user_id)) {
-                trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
-            }
-            if (!$stmt->execute()) {
-                trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
-            }
-            return $stmt->num_rows;
-        } catch (\PDOException $exception) {
-            trigger_error($exception->getMessage());
-            exit($exception->getMessage());
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => ""
+        );
+        /* Prepared statement, stage 1: prepare */
+        if (!($stmt = $this->db->prepare("DELETE FROM users WHERE id LIKE ?"))) {
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
         }
-        return 0;
+        /* Prepared statement, stage 2: bind and execute */
+        if (!$stmt->bind_param("s", $user_id)) {
+            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        if (!$stmt->execute()) {
+            $result["status"] = null;
+            $result["body"]   = null;
+            $result["error"]  = $stmt->error;
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        } else {
+            $result["status"] = "Deleted successful";
+            $result["body"]   = null;
+            $result["error"] = null;
+        }
+        return $result;
     }
 
     /**
