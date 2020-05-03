@@ -35,14 +35,11 @@ if ($web_login == 1)
     $login->setPassword($login_frm_password);
     $username_or_email_error = $login->perform_username_or_email_check();
     $password_error = $login->perform_password_check();
-    if ($username_or_email_error == null && $password_error == null
-        && !empty($login_frm_credentials) && !empty($password_error)){
-        echo "login in... ...";
-        $login->perform_login();
+    if ($login->perform_login()["status"] == false){
+//        TODO:: create a material css toast
+//          echo $login->perform_login()["error"];
     }
-
 }
-
 $login_page = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
@@ -67,7 +64,7 @@ $login_page = <<<HTML
       <div class="col s4">
         <form action="login.php" method="POST" class="form" id="loginForm">
             <fieldset id="loginFormFieldset">
-                <legend id="loginFormLegend">Restricted Access</legend>
+                <legend id="loginFormLegend" class="text-danger">Restricted Access</legend>
                 <div class="input-field">
                     <input id="inputCredentials" type="text" class="validate" name="inputCredentials">
                     <label for="inputCredentials" id="labelInputCredentials">Username or Email</label>
