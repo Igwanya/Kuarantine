@@ -32,92 +32,134 @@ class Repository
      */
     public function find_all_users()
     {
-        try{
-            $stmt = $this->db->prepare("
-            SELECT 
-             id, username, email, first_name, last_name, is_admin, password_hash, created, last_updated
-            FROM
-              users 
-            ");
-            if (!($stmt))
-            {
-                trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error,
-                    E_USER_ERROR);
-            }
-            if (!$stmt->execute()) {
-                trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error,
-                    E_CORE_ERROR);
-            }
-            $res = $stmt->get_result();
-            $row = $res->fetch_all(\PDO::FETCH_ASSOC);
-            return $row;
-        }  catch (\PDOException $exception){
-            exit($exception->getMessage());
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => ""
+        );
+        $stmt = $this->db->prepare("SELECT * FROM users");
+        if (!($stmt))
+        {
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error,
+                E_USER_ERROR);
         }
+        if (!$stmt->execute()) {
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error,
+                E_CORE_ERROR);
+            $result["error"] = $stmt->error;
+        }
+        $res = $stmt->get_result();
+        if ($res->num_rows > 0){
+            $result["status"] = $res->num_rows." users found";
+            $result["error"]  = null;
+            while($row = $res->fetch_assoc()){
+              $user = array(
+                  "id"           => $row["id"],
+                  "username"     => $row["username"],
+                  "email"        => $row["email"],
+                  "firstName"    => $row["firstName"],
+                  "lastName"     => $row["lastName"],
+                  "isAdmin"      => $row["isAdmin"],
+                  "passwordHash" => $row["passwordHash"],
+                  "created"      => $row["created"],
+                  "lastUpdated"  => $row["lastUpdated"],
+              );
+              array_push($result["body"], $user);
+            }
+        }  else {
+            $result['body'] = null;
+            $result['status'] = "No users signed up. ";
+        }
+        return $result;
     }
 
     /**
      * Find a user with a specified id
      * @param $id
-     * @return array $row[column_name]
+     * @return array 
      */
     public function find_user_with_id($id)
     {
-        try{
-            $stmt = $this->db->prepare("SELECT * FROM users WHERE id LIKE ?");
-            if (!($stmt))
-            {
-                trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error,
-                    E_USER_ERROR);
-            }
-            if (!$stmt->bind_param('i', $id)){
-                trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error,
-                    E_ERROR);
-            }
-            if (!$stmt->execute()) {
-                trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error,
-                    E_CORE_ERROR);
-            }
-            $res = $stmt->get_result();
-            $row = $res->fetch_assoc();
-            return $row;
-        } catch (\PDOException $exception){
-            exit($exception->getMessage());
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => ""
+        );
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE id LIKE ?");
+        if (!($stmt))
+        {
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error,
+                E_USER_ERROR);
         }
+        if (!$stmt->bind_param('i', $id)){
+            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error,
+                E_ERROR);
+        }
+        if (!$stmt->execute()) {
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error,
+                E_CORE_ERROR);
+            $result['status'] = "No user with that id exists";
+            $result["error"]  =  $stmt->error;
+        }
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        if ($row["id"] != null){
+            $result["status"]  = "Query successful";
+            $result["error"]   = null;
+            $result["body"]    = array(
+                "id"           => $row["id"],
+                "username"     => $row["username"],
+                "email"        => $row["email"],
+                "firstName"    => $row["firstName"],
+                "lastName"     => $row["lastName"],
+                "isAdmin"      => $row["isAdmin"],
+                "passwordHash" => $row["passwordHash"],
+                "created"      => $row["created"],
+                "lastUpdated"  => $row["lastUpdated"],
+            );
+        } else {
+            $result['status'] = "No user with that id exists";
+            $result["error"]  =  $stmt->error;
+        }
+        return $result;
     }
 
     /**
-     * @param $user User model object
-     * @return int If the operation succeeds
+     * @param User
+     * @return array
      */
-    public function add_user_to_db(&$user) : int
+    public function add_user_to_db(&$user)
     {
-//        TODO:: research more on how to auto generate the id with breaking shit
-        try {
-            /* Prepared statement, stage 1: prepare */
-            if (!($stmt = $this->db->prepare("
-            INSERT INTO users(
-             id, username, email, first_name, last_name, is_admin, password_hash, created, last_updated
-            ) VALUES (?,?,?,?,?,?,?,?,?)"))) {
-                trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
-            }
-            /* Prepared statement, stage 2: bind and execute */
-            if (!$stmt->bind_param("issssssss", $user->get_Id(),
-                $user->get_username(), $user->get_email(), $user->get_first_name(), $user->get_last_name(),
-                $user->is_Admin(), $user->get_password_hash(), $user->get_created(), $user->get_last_updated())) {
-                trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
-            }
-            if (!$stmt->execute()) {
-                trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
-            }
-            return $stmt->num_rows;
-        } catch (\PDOException $exception) {
-            trigger_error($exception->getMessage());
-            exit($exception->getMessage());
-        }
-        return 0;
-    }
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => ""
+        );
 
+        /* Prepared statement, stage 1: prepare */
+        if (!($stmt = $this->db->prepare("
+        INSERT INTO users(
+         username, email, firstName, lastName, isAdmin, passwordHash, created, lastUpdated
+        ) VALUES (?,?,?,?,?,?,?,?)"))) {
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
+        }
+        /* Prepared statement, stage 2: bind and execute */
+        if (!$stmt->bind_param("ssssssss",$user->get_username(), $user->get_email(),
+            $user->get_first_name(), $user->get_last_name(),             $user->is_Admin(),
+            $user->get_password_hash(), $user->get_created(), $user->get_last_updated())) {
+            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        if (!$stmt->execute()) {
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+            $result["status"]  = "User insertion failed";
+            $result["body"]    = null;
+            $result["error"]   =  $stmt->error;
+        } else {
+            $result["status"] = "Insertion success";
+            $result["error"]   = null;
+        }
+        return $result;
+    }
 
     /**
      * @param $id user id
@@ -310,11 +352,10 @@ class Repository
              }
          } else {
              $result['body'] = null;
-             $result['error'] = "No Articles yet! ";
+             $result['status'] = "No Articles yet! ";
          }
          return $result;
      }
-
 
     /**
      * @param $articleID
