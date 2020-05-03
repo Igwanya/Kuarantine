@@ -114,6 +114,7 @@ class Login{
             $this->login_frm_inputs['last_updated'] = $row['lastUpdated'];
             $this->login_frm_inputs['password']     = $row['passwordHash'];
             $_SESSION['is_admin']                   = $row['isAdmin'];
+            $_SESSION["login_ID"]                    =  $row['id'];
             $this->login_frm_inputs_errors['credentials_error'] = "";
         } else {
             $this->login_frm_inputs_errors['credentials_error'] = 'Invalid email address';
@@ -149,6 +150,7 @@ class Login{
             $this->login_frm_inputs['last_updated'] = $row['lastUpdated'];
             $this->login_frm_inputs['password']     = $row['passwordHash'];
             $_SESSION['is_admin']                   = $row['isAdmin'];
+            $_SESSION["login_ID"]                    =  $row['id'];
             $this->login_frm_inputs_errors['credentials_error'] = "";
         } else {
             $this->login_frm_inputs_errors['credentials_error'] = 'No user with that username exists. ';
