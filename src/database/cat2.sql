@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
 # Create the root user ME :)
  /**
  * Create the admin account
+ * Password: Igwanya32
  */
  INSERT INTO `users` (
 `id`, `username`, `email`, `firstName`, `lastName`, `isAdmin`, `passwordHash`, `created`, `lastUpdated`)
@@ -52,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
 'Felix', 
 'Muthui',
 true, 
-'$2y$10$LqWFL22ui/PNf51aN.dFe.jaQiC4EqUmgVdLm7CtgVdwi.NvYh2hm',
+'$2y$10$N6FfGndrdk0UcNvzPrgiTubW7OXT4FWVCP8vdUf20hlyAET9y06Oi',
 CURRENT_TIMESTAMP,
  CURRENT_TIMESTAMP);
  
