@@ -214,48 +214,13 @@ class Register{
         return $this->register_form_errors['email_error'];
     }
 
-    public function register()
-    {
-        $this->register_correct_inputs['username']    = $this->getUsername();
-        $this->register_correct_inputs['email']       = $this->getEmail();
-        $this->register_correct_inputs['first_name']  = $this->getFirstName();
-        $this->register_correct_inputs['last_name']   = $this->getLastName();
-        $this->register_correct_inputs['is_admin']    = false;
-        $this->register_correct_inputs['password']    = $this->getPassword();
-        $this->register_correct_inputs['created']     = date("Y-m-d");
-        $this->register_correct_inputs['expiry_date'] = null;
-        $stmt =  $this->conn->prepare("INSERT INTO users 
-       (username, email, first_name, last_name, is_admin, password_hash, created, expiry_date)
-        VALUES (?,?,?,?,?,?,?,?)");
-        if (!($stmt)){
-            trigger_error("Prepare failed: (" . $this->conn->errno . ") " .
-                $this->conn->error, E_USER_ERROR);
-        }
-        if (!$stmt->bind_param('ssssisss', $this->register_correct_inputs['username'],
-            $this->register_correct_inputs['email'], $this->register_correct_inputs['first_name'],
-            $this->register_correct_inputs['last_name'], $this->register_correct_inputs['is_admin'],
-            $this->register_correct_inputs['password'], $this->register_correct_inputs['created'],
-            $this->register_correct_inputs['expiry_date'])){
-            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " .
-                $stmt->error, E_ERROR);
-        }
-        if (!$stmt->execute()) {
-            trigger_error("Execute failed: (" . $stmt->errno . ") " .
-                $stmt->error, E_CORE_ERROR);
-        } else {
-              return true;
-        }
-       return false;
-    }
 
     public function performLogin(){
-        if ($this->register()){
-            $login = new Login();
-            $login->setUsernameOrEmail($this->getUsername());
-            $login->setPassword($this->m_password);
-            $login->perform_username_check($this->getUsername());
-            $login->perform_login();
-        }
+        $login = new Login();
+        $login->setUsernameOrEmail($this->getUsername());
+        $login->setPassword($this->m_password);
+        $login->perform_username_check($this->getUsername());
+        $login->perform_login();
     }
 
     /**
