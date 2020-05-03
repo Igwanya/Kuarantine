@@ -9,6 +9,8 @@
 namespace Src\api;
 
 use Src\auth\Register;
+use Src\models\User;
+use Src\Repository;
 
 require_once __DIR__ . '../../../vendor/autoload.php';
 
@@ -20,8 +22,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");
 header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Headers: Content-Type,
-         Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 $requestMethod = $_SERVER["REQUEST_METHOD"];
 if ($requestMethod == 'POST')
@@ -36,6 +37,7 @@ if ($requestMethod == 'POST')
     );
     // GET DATA FORM REQUEST
     $data = json_decode(file_get_contents("php://input"));
+    $repository = new Repository();
     $register = new Register();
     if (!empty($data)){
         $register->setUsername($data->username);
@@ -50,10 +52,19 @@ if ($requestMethod == 'POST')
 
     if (empty($result['error']['username_error'])
         && empty($result['error']['email_error']))  {
-         $register->register();
-         $result['status']  = "Sign up successful";
-         $result['body']    = $register->getRegisterCorrectInputs();
-         $result['error'] = null;
+      $user = new User(null, $data->username, $data->email,
+          "", "", false, date("Y-m-d"), date("Y-m-d"));
+      $user->set_password_hash($data->password);
+      $register =   $repository->add_user_to_db($user);
+      $result['status'] = $register['status'];
+      $result['error']  = $register['error'];
+    }
+
+    if (empty($result['error']['username_error'])
+        && empty($result['error']['email_error'])) {
+        $result['status'] = "Sign up successful";
+        $result['body']   = null;
+        $result['error']  = null;
     }
 
     echo json_encode($result);
