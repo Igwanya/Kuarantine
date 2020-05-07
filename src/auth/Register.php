@@ -9,6 +9,7 @@
 namespace Src\auth;
 use Src\database\DatabaseConnection;
 use Src\models\User;
+use Src\Repository;
 
 require_once __DIR__ . '../../../vendor/autoload.php';
 
@@ -27,13 +28,15 @@ class Register{
         "password_error"   => ""
     );
     public $register_correct_inputs = array(
-        "username"    => "",
-        "email"       => "",
-        "first_name"  => "",
-        "last_name"   => "",
-        "is_admin"    => 0,
-        "created"     => "",
-        "expiry_date" => ""
+        "username"     => "",
+        "email"        => "",
+        "first_name"   => "",
+        "last_name"    => "",
+        "is_admin"     => 0,
+        "password"     => "",
+        "created"      => "",
+        "last_updated" => "",
+        "expiry_date"  => ""
     );
 
     /**
@@ -135,13 +138,7 @@ class Register{
      */
     public function getPassword()
     {
-        if (!empty($this->m_password) && $this->m_password != null) {
-            $user = new User(null,null,null,
-                null,null,null,null,null);
-            $user->set_password_hash($this->m_password);
-            return $user->get_password_hash();
-        }
-        return $this->m_password = "";
+        return $this->m_password;
     }
 
     /**
@@ -214,6 +211,41 @@ class Register{
         return $this->register_form_errors['email_error'];
     }
 
+    /**
+     * @return array
+     */
+    public function getRegisterCorrectInputs(): array
+    {
+        $this->register_correct_inputs['password']  = $this->getPassword();
+        $this->register_correct_inputs['created']   = date("Y-m-d");
+        $this->register_correct_inputs['last_updated'] = date("Y-m-d");
+
+        return $this->register_correct_inputs;
+    }
+
+    public function register_user(){
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => ""
+        );
+        $repo = new Repository();
+        $user = new User(
+            null,
+            $this->getRegisterCorrectInputs()['username'],
+            $this->getRegisterCorrectInputs()['email'],
+            $this->getRegisterCorrectInputs()["first_name"],
+            $this->getRegisterCorrectInputs()["last_name"],
+            $this->getRegisterCorrectInputs()["is_admin"],
+            $this->getRegisterCorrectInputs()["created"],
+            $this->getRegisterCorrectInputs()["last_updated"]
+        );
+        $user->set_password_hash($this->getPassword());
+        $result =  $repo->add_user_to_db($user);
+        return $result;
+    }
+
+
 
     public function performLogin(){
         $login = new Login();
@@ -223,12 +255,6 @@ class Register{
         $login->perform_login();
     }
 
-    /**
-     * @return array
-     */
-    public function getRegisterCorrectInputs(): array
-    {
-        return $this->register_correct_inputs;
-    }
+
 
 }
