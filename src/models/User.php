@@ -133,6 +133,45 @@ class User
     }
 
     /**
+     * @var string
+     */
+    private $url;
+
+    private $full_name;
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl(string $url)
+    {
+        $this->url = $url;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFullName()
+    {
+        return $this->full_name;
+    }
+
+    /**
+     * @param mixed $full_name
+     */
+    public function setFullName($full_name)
+    {
+        $this->full_name = $full_name;
+    }
+
+    /**
      * @return string
      */
     public function get_username() :string
