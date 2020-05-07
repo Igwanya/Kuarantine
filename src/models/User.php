@@ -120,17 +120,8 @@ class User
      * @param $last_name
      * @param $is_admin
      */
-    public function __construct($id, $username, $email, $first_name, $last_name, $is_admin, $created, $last_updated)
-    {
-        $this->m_id = $id;
-        $this->m_username = $username;
-        $this->m_email = $email;
-        $this->m_first_name = $first_name;
-        $this->m_last_name = $last_name;
-        $this->is_admin = $is_admin;
-        $this->m_created = $created;
-        $this->m_last_updated = $last_updated;
-    }
+    public function __construct()
+    {    }
 
     /**
      * @var string
