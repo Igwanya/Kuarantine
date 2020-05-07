@@ -121,7 +121,8 @@ class User
      * @param $is_admin
      */
     public function __construct()
-    {    }
+    {
+    }
 
     /**
      * @var string
@@ -248,9 +249,7 @@ class User
     public function __toString()
     {
         // TODO: Implement __toString() method.
-        return "user : ".
-                "Email : ".$this->get_email().
-                "<br/> Password " . password_get_info($this->m_password_hash) . " ";
+        return $this->m_email;
     }
 
 
