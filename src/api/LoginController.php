@@ -46,7 +46,7 @@ if ($requestMethod == 'POST')
         http_response_code(200);
         $result['status'] = 'Login successful';
         $result['body']['user']  = $login->getLoginFrmInputs();
-        $result['error']   = null;
+        $result['error']   = array();
     } else {
         http_response_code(404);
         $result['status'] = 'Login unsuccessful';
