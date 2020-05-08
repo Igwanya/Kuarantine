@@ -55,10 +55,12 @@ class Repository
             while($row = $res->fetch_assoc()){
               $user = array(
                   "id"           => $row["id"],
+                  "url"           => $row["url"],
                   "username"     => $row["username"],
                   "email"        => $row["email"],
                   "firstName"    => $row["firstName"],
                   "lastName"     => $row["lastName"],
+                  "fullName"     => $row["fullName"],
                   "isAdmin"      => $row["isAdmin"],
                   "passwordHash" => $row["passwordHash"],
                   "created"      => $row["created"],
@@ -107,15 +109,19 @@ class Repository
             $result["status"]  = "Query successful";
             $result["error"]   = null;
             $result["body"]    = array(
-                "id"           => $row["id"],
-                "username"     => $row["username"],
-                "email"        => $row["email"],
-                "firstName"    => $row["firstName"],
-                "lastName"     => $row["lastName"],
-                "isAdmin"      => $row["isAdmin"],
-                "passwordHash" => $row["passwordHash"],
-                "created"      => $row["created"],
-                "lastUpdated"  => $row["lastUpdated"],
+                "user"   => array(
+                    "id"           => $row["id"],
+                    "url"           => $row["url"],
+                    "username"     => $row["username"],
+                    "email"        => $row["email"],
+                    "firstName"    => $row["firstName"],
+                    "lastName"     => $row["lastName"],
+                    "fullName"     => $row["fullName"],
+                    "isAdmin"      => $row["isAdmin"],
+                    "passwordHash" => $row["passwordHash"],
+                    "created"      => $row["created"],
+                    "lastUpdated"  => $row["lastUpdated"]
+                )
             );
             return $result;
         } else {
@@ -126,10 +132,20 @@ class Repository
     }
 
     /**
-     * @param User
+     * @param $url
+     * @param $username
+     * @param $email
+     * @param $firstName
+     * @param $lastName
+     * @param $fullName
+     * @param $isAdmin
+     * @param $passwordHash
+     * @param $created
+     * @param $lastUpdated
      * @return array
      */
-    public function add_user_to_db(&$user)
+    public function add_user_to_db($url, $username, $email, $firstName,
+                                   $lastName, $fullName, $isAdmin, $passwordHash, $created, $lastUpdated)
     {
         $result = array(
             "status"  => "",
@@ -139,15 +155,13 @@ class Repository
 
         /* Prepared statement, stage 1: prepare */
         if (!($stmt = $this->db->prepare("
-        INSERT INTO users(
-         username, email, firstName, lastName, isAdmin, passwordHash, created, lastUpdated
-        ) VALUES (?,?,?,?,?,?,?,?)"))) {
+        INSERT INTO users(url, username, email, firstName, lastName, fullName, isAdmin,
+         passwordHash, created, lastUpdated ) VALUES (?,?,?,?,?,?,?,?,?,?)"))) {
             trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
         }
         /* Prepared statement, stage 2: bind and execute */
-        if (!$stmt->bind_param("ssssssss",$user->get_username(), $user->get_email(),
-            $user->get_first_name(), $user->get_last_name(),             $user->is_Admin(),
-            $user->get_password_hash(), $user->get_created(), $user->get_last_updated())) {
+        if (!$stmt->bind_param("ssssssssss",$url, $username, $email,
+            $firstName, $lastName, $fullName,   $isAdmin, $passwordHash, $created, $lastUpdated)) {
             trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
         }
         if (!$stmt->execute()) {
@@ -162,29 +176,23 @@ class Repository
         return $result;
     }
 
-    /**
-     * @param $id
-     * @param $username
-     * @param $email
-     * @param $first_name
-     * @param $last_name
-     * @return array
-     */
-    public function update_user_to_db($id, $username, $email, $first_name, $last_name)
+    public function update_user_to_db($id, $url, $username, $email, $firstName,
+                                      $lastName, $fullName, $isAdmin, $passwordHash, $lastUpdated)
     {
         $result = array(
             "status"  => "",
             "body"    => array(),
             "error"   => ""
         );
-        $sql = "UPDATE users SET username=?, email=?, firstName=?, lastName=?, lastUpdated=?  WHERE id=?";
+        $sql = "UPDATE users SET url=?, username=?, email=?, firstName=?, lastName=?, 
+                fullName=?, isAdmin=?, passwordHash=?, lastUpdated=?  WHERE id=?";
         $lastUpdated = date("Y-m-d");
         /* Prepared statement, stage 1: prepare */
         if (!$stmt = $this->db->prepare($sql)){
             trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
         }
-        if (!$stmt->bind_param("sssssi",$username,$email,
-            $first_name, $last_name,$lastUpdated, $id)){
+        if (!$stmt->bind_param("sssssssssi",$url,$username,  $email, $firstName, $lastName,
+            $fullName, $isAdmin, $passwordHash, $lastUpdated, $id)){
             trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
             }
         /* Prepared statement, stage 2: bind and execute */
@@ -197,7 +205,6 @@ class Repository
             $result["body"] = null;
             $result["error"] =  null;
         }
-
         return $result;
     }
 

@@ -12,10 +12,12 @@ USE `cat2`;
 # Create the user table
 CREATE TABLE IF NOT EXISTS `users` ( 
 `id` INT(11) auto_increment ,
+`url` VARCHAR(60) NULL ,
 `username` VARCHAR(60) NULL , 
 `email` VARCHAR(60) NOT NULL , 
 `firstName` VARCHAR(60) NULL ,
 `lastName` VARCHAR(60) NULL ,
+`fullName` VARCHAR(60) NULL,
 `isAdmin` BOOLEAN NULL ,
 `passwordHash` VARCHAR(65) NOT NULL ,
 `created` DATETIME NULL ,
@@ -75,13 +77,13 @@ VALUES
 # Create the app table
 #
 CREATE TABLE IF NOT EXISTS `app` (
-`appID` INT auto_increment primary key,
-`app_version` varchar(50) NULL,
-`model`     varchar(50) NULL,
-`user`      varchar(70) NULL,
-`api_level` varchar(70) NULL,
-`screen_resolution` varchar(70) NULL,
-`screen_density` varchar(70) NULL
+`id` INT auto_increment primary key,
+`version_name` varchar(50) NULL,
+`version_code`     varchar(50) NULL,
+`user_id`      varchar(70) NULL,
+`display` varchar(70) NULL ,
+`created` DATETIME NULL ,
+`lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );  
 
 select * from `app`;

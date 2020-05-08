@@ -8,6 +8,7 @@
 
 namespace Src;
 use Src\auth\Register;
+use Src\models\User;
 
 require_once __DIR__ . '../../vendor/autoload.php';
 error_reporting(E_ALL);
@@ -33,15 +34,17 @@ switch ($request_method) {
         $register->setUsername($username);
         $username_error = $register->perform_username_check();
         $email = filter_input(INPUT_POST, 'email');
+        $email  = filter_var($email, FILTER_SANITIZE_EMAIL);
         $register->setEmail($email);
         $email_error = $register->perform_email_check();
         $first_name = filter_input(INPUT_POST, 'first_name');
         $register->setFirstName($first_name);
         $last_name = filter_input(INPUT_POST, 'last_name');
         $register->setLastName($last_name);
+        $full_name = filter_input(INPUT_POST, "full_name");
+        $register->setFullName($full_name);
         $password = filter_input(INPUT_POST, 'password');
         $register->setPassword($password);
-        
         if ($username_error == null && $email_error == null){
             $uploaddir = $_SERVER["DOCUMENT_ROOT"]."/public_html/uploads/";
             if (mkdir($uploaddir.$username)){
@@ -51,9 +54,11 @@ switch ($request_method) {
                         if (rename($uploadfile,
                             $uploaddir.$username."/".basename($_FILES['userfile']['name']))) {
                              //Register and  login user who uploaded a profile photo
+                            $files = scandir($uploaddir.$username);
+                            $register->setUrl($uploaddir.$username.'/'.$files[2]);
                             if (empty($register->register_user()["error"])){
                                 $register->performLogin();
-                            }
+                            }else {$result['error'] = "Cannot register the new user .";}
                         } else {
                            $result["error"] = "Failed to move the file";
                         }
@@ -62,10 +67,9 @@ switch ($request_method) {
                     // No profile photo uploaded
                     if (empty($register->register_user()["error"])){
                         $register->performLogin();
-                    }
+                    }else {$result['error'] = "Cannot register the new user .";}
                 }
             }
-
         }
         break;
 }

@@ -390,6 +390,12 @@ form#registerForm input#inputPassword
 {
     margin-bottom: 12px;
 }
+form#registerForm div#inputPhoto
+{
+    margin-bottom: 24px;
+    padding-bottom: 35px;
+}
+
 form#registerForm input#inputTermsAndConditions
 {
     margin-bottom: 12px;
