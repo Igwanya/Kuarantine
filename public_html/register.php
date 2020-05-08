@@ -55,7 +55,10 @@ switch ($request_method) {
                             $uploaddir.$username."/".basename($_FILES['userfile']['name']))) {
                              //Register and  login user who uploaded a profile photo
                             $files = scandir($uploaddir.$username);
-                            $register->setUrl($uploaddir.$username.'/'.$files[2]);
+                            $url =  $uploaddir.$username.'/'.$files[2];
+                            $var = preg_split("#/#", $url);
+                            $result = '/'.$var[3].'/'.$var[4].'/'.$var[5].'/'.$var[6];
+                            $register->setUrl($result);
                             if (empty($register->register_user()["error"])){
                                 $register->performLogin();
                             }else {$result['error'] = "Cannot register the new user .";}
