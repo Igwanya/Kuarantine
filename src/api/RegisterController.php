@@ -42,30 +42,21 @@ if ($requestMethod == 'POST')
     if (!empty($data)){
         $register->setUsername($data->username);
         $register->setEmail($data->email);
-        $register->setPassword($data->password);
         $result['error']['username_error'] = $register->perform_username_check();
-        $result['error']['email_error']   = $register->perform_email_check();
-
+        $result['error']['email_error']    = $register->perform_email_check();
+        $register->setFullName($data->full_name);
+        $register->setPassword($data->password); 
     }else{
        $result['status'] = "Empty fields detected ";
     }
-
     if (empty($result['error']['username_error'])
         && empty($result['error']['email_error']))  {
-      $user = new User(null, $data->username, $data->email,
-          "", "", false, date("Y-m-d"), date("Y-m-d"));
-      $user->set_password_hash($data->password);
-      $register =   $repository->add_user_to_db($user);
-      $result['status'] = $register['status'];
-      $result['error']  = $register['error'];
+         $result = $register->register_user();
     }
-
     if (empty($result['error']['username_error'])
         && empty($result['error']['email_error'])) {
         $result['status'] = "Sign up successful";
-        $result['body']   = null;
-        $result['error']  = null;
+        $result['error']  = array();
     }
-
     echo json_encode($result);
 }
