@@ -34,8 +34,11 @@ class Repository
     {
         $result = array(
             "status"  => "",
-            "body"    => array(),
-            "error"   => ""
+            "body"    => array(
+                "user" => array(),
+                "count"  => 0
+            ),
+            "error"   => array()
         );
         $stmt = $this->db->prepare("SELECT * FROM users");
         if (!($stmt))
@@ -51,7 +54,7 @@ class Repository
         $res = $stmt->get_result();
         if ($res->num_rows > 0){
             $result["status"] = $res->num_rows." users found";
-            $result["error"]  = null;
+            $result['body']['count'] =  $res->num_rows;
             while($row = $res->fetch_assoc()){
               $user = array(
                   "id"           => $row["id"],
@@ -66,7 +69,7 @@ class Repository
                   "created"      => $row["created"],
                   "lastUpdated"  => $row["lastUpdated"],
               );
-              array_push($result["body"], $user);
+              array_push($result["body"]["user"], $user);
             }
         }  else {
             $result['body'] = null;
@@ -85,7 +88,7 @@ class Repository
         $result = array(
             "status"  => "",
             "body"    => array(),
-            "error"   => ""
+            "error"   => array()
         );
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id LIKE ?");
         if (!($stmt))
@@ -107,7 +110,6 @@ class Repository
         $row = $res->fetch_assoc();
         if ($row["id"] != null){
             $result["status"]  = "Query successful";
-            $result["error"]   = null;
             $result["body"]    = array(
                 "user"   => array(
                     "id"           => $row["id"],
@@ -126,7 +128,6 @@ class Repository
             return $result;
         } else {
             $result['status'] = "No user with that id exists";
-            $result["error"]  =  $stmt->error;
         }
         return $result;
     }
@@ -150,7 +151,7 @@ class Repository
         $result = array(
             "status"  => "",
             "body"    => array(),
-            "error"   => ""
+            "error"   => array()
         );
 
         /* Prepared statement, stage 1: prepare */

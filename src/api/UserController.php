@@ -48,25 +48,16 @@ switch ($requestMethod) {
         // GET DATA FORM REQUEST
         $data = json_decode(file_get_contents("php://input"));
         if (!empty($data)) {
-            $user = new User(
-                null,
-                $data->username,
-                $data->email,
-                $data->first_name,
-                $data->last_name,
-                false,
-                date("Y-m-d"),
-                date("Y-m-d")
-            );
-            $user->set_password_hash($data->password);
             $register = new Register();
-            $register->setUsername($user->get_username());
-            $register->setEmail($user->get_email());
+            $register->setUsername($data->username);
+            $register->setEmail($data->email);
             $result["error"]["username_error"] = $register->perform_username_check();
             $result["error"]["email_error"]  = $register->perform_email_check();
+            $register->setPassword($data->password);
+            $result['error']  = array();
             if ( empty($result["error"]["username_error"])
                 && empty($result["error"]["email_error"])){
-              $result["body"] = $repository->add_user_to_db($user)["body"];
+               $result = $register->register_user();
             }
         }
         echo json_encode($result);

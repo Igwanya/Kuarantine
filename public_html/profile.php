@@ -27,7 +27,7 @@ require_once __DIR__ . '../../vendor/autoload.php';
      header("Location: http://$host$uri/$extra");
      exit;
  }
- ?>
+  ?>
 <?php
  /**
   * Display the user profile page
