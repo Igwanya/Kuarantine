@@ -22,4 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.collapsible');
     var instances = M.Collapsible.init(elems, 'accordion');
   });
+
+$(document) .ready(function(){
+    $('select').formSelect();
+});
+
+$(document) .ready(function(){
+    $('input#input_text, textarea#inputDescription').characterCounter();
+});
         
