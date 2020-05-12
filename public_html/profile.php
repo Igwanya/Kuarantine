@@ -14,12 +14,14 @@ ini_set('display_errors', true);
 ini_set('html_errors', true);
 
 require_once __DIR__ . '../../vendor/autoload.php';
+$repository = new Repository();
+$result =  $repository->find_user_with_id($_SESSION['login_ID']);
+$admin = $result['body']['user']['isAdmin'];
 
 /**
  * Redirect to the admin page if the user is admin
  */
- $_SESSION['is_admin'] = false;
- if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']){
+ if ($admin == 1){
      /* Redirect to a different page in the current directory that was requested */
      $host = $_SERVER['HTTP_HOST'];
      $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
@@ -72,17 +74,20 @@ require_once __DIR__ . '../../vendor/autoload.php';
                  <li id="navProfileLink">
                      <a href="#!" data-target="chat-dropdown" class="dropdown-trigger waves-effect" id="navProfileLink">
                          <i class="material-icons">settings</i></a></li>
+                 <li id="">
+                     <a href="logout.php" data-target="chat-dropdown"
+                        class="dropdown-trigger waves-effect text-light text-capitalize" id="navProfileLink">Logout</a></li>
              </ul>
          </div>
      </nav>
      <ul id="nav-mobile" class="sidenav sidenav-fixed">
          <li><div class="user-view">
                  <div class="background">
-                     <img src="" alt="account-background">
+                     <img src="res/img/profile-background-design-material-image_131823.jpg" alt="account-background">
                  </div>
-                 <a href=""><img class="circle" src="" alt="user-avatar"></a>
-                 <a href=""><span class="text-black-50 name">John Doe</span></a>
-                 <a href=""><span class="email">jdandturk@gmail.com</span></a>
+                 <a href=""><img class="circle" src="<?php echo $result['body']['user']['url']; ?>" alt="user-avatar"></a>
+                 <a href=""><span class="text-black-50 name"><?php echo $result['body']['user']['fullName']; ?></span></a>
+                 <a href=""><span class=" text-black-50 email"><?php echo $result['body']['user']['email']; ?></span></a>
              </div></li>
          <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
          <li><a href="#!">Second Link</a></li>

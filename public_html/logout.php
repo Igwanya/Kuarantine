@@ -104,6 +104,5 @@ if ($_SESSION['is_authenticated'] == 1)
     echo $logout_page;
 }
 else {
-    redirect_to_index_page();
-
+    header("Location: http://" .$_SERVER['SERVER_NAME']);
 }
