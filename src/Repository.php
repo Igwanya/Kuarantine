@@ -453,30 +453,34 @@ class Repository
    }
 
     /**
-     * @param $app_version
-     * @param $model
-     * @param $user
-     * @param $api_level
-     * @param $screen_resolution
-     * @param $screen_density
+     * Expected inputs:
+     *      (
+     *          [application_id] =>
+     *          [created]        =>
+     *          [display]        =>
+     *          [user_id]        =>
+     *          [version_name]   =>
+     *          [version_code]   =>
+     *   )
      * @return array
      */
-   public function insert_app_data($app_version, $model, $user,
-                                   $api_level, $screen_resolution, $screen_density) {
+   public function insert_app_data($application_id, $created, $display,
+                                   $user_id, $version_name, $version_code) {
        $result = array(
            "status" => "" ,
-           "body" => "",
-           "error"   => ""
+           "body" => array(),
+           "error"   => array()
        );
-       $insert_stmt = "INSERT INTO app (app_version, model, user, api_level,
-                 screen_resolution, screen_density) VALUES (?,?,?,?,?,?)";
+       $insert_stmt = "INSERT INTO app (applicationID, versionName, versionCode,  
+              userID, display, created, lastUpdated ) VALUES (?, ?, ?, ?, ?, ?, ?)";
        /* Prepared statement, stage 1: prepare */
        if (!($stmt = $this->db->prepare($insert_stmt))) {
            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
        }
+       $last_updated = date("Y-m-d");
        /* Prepared statement, stage 2: bind and execute */
-       if (!$stmt->bind_param("ssssss", $app_version, $model, $user,
-           $api_level, $screen_resolution,$screen_density)) {
+       if (!$stmt->bind_param("sssssss", $application_id, $version_name, $version_code,
+           $user_id, $display , $created, $last_updated)) {
            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
        }
        if (!$stmt->execute()) {
