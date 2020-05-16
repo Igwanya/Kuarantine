@@ -6,6 +6,8 @@
  * Time: 5:27 AM
  */
 
+namespace Src;
+
 require_once __DIR__ . '../../vendor/autoload.php';
 
 
