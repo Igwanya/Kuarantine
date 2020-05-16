@@ -132,6 +132,115 @@ class Repository
         return $result;
     }
 
+
+    /**
+     * Find a user with a specified email
+     * @param $email
+     * @return array
+     */
+    public function find_user_with_email($email)
+    {
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => array()
+        );
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE email LIKE ?");
+        if (!($stmt))
+        {
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error,
+                E_USER_ERROR);
+        }
+        if (!$stmt->bind_param('s', $email)){
+            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error,
+                E_ERROR);
+        }
+        if (!$stmt->execute()) {
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error,
+                E_CORE_ERROR);
+            $result['status'] = "No user with that email exists";
+            $result["error"]  =  $stmt->error;
+        }
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        if ($row["id"] != null){
+            $result["status"]  = "Query successful";
+            $result["body"]    = array(
+                "user"   => array(
+                    "id"           => $row["id"],
+                    "url"           => $row["url"],
+                    "username"     => $row["username"],
+                    "email"        => $row["email"],
+                    "firstName"    => $row["firstName"],
+                    "lastName"     => $row["lastName"],
+                    "fullName"     => $row["fullName"],
+                    "isAdmin"      => $row["isAdmin"],
+                    "passwordHash" => $row["passwordHash"],
+                    "created"      => $row["created"],
+                    "lastUpdated"  => $row["lastUpdated"]
+                )
+            );
+            return $result;
+        } else {
+            $result['status'] = "No user with that email exists";
+        }
+        return $result;
+    }
+
+
+    /**
+     * Find a user with a specified username
+     * @param $username
+     * @return array
+     */
+    public function find_user_with_username($username)
+    {
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => array()
+        );
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE username LIKE ?");
+        if (!($stmt))
+        {
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error,
+                E_USER_ERROR);
+        }
+        if (!$stmt->bind_param('s', $username)){
+            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error,
+                E_ERROR);
+        }
+        if (!$stmt->execute()) {
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error,
+                E_CORE_ERROR);
+            $result["error"]  =  $stmt->error;
+        }
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        if ($row["id"] != null){
+            $result["status"]  = "Query successful";
+            $result["body"]    = array(
+                "user"   => array(
+                    "id"           => $row["id"],
+                    "url"           => $row["url"],
+                    "username"     => $row["username"],
+                    "email"        => $row["email"],
+                    "firstName"    => $row["firstName"],
+                    "lastName"     => $row["lastName"],
+                    "fullName"     => $row["fullName"],
+                    "isAdmin"      => $row["isAdmin"],
+                    "passwordHash" => $row["passwordHash"],
+                    "created"      => $row["created"],
+                    "lastUpdated"  => $row["lastUpdated"]
+                )
+            );
+            return $result;
+        } else {
+            $result['status'] = "No user with that username exists";
+        }
+        return $result;
+    }
+
     /**
      * @param $url
      * @param $username

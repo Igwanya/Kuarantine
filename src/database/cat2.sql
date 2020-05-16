@@ -9,6 +9,8 @@
 CREATE DATABASE `cat2`;
 USE `cat2`;
 
+# DROP DATABASE `cat2`;
+
 # Create the user table
 CREATE TABLE IF NOT EXISTS `users` ( 
 `id` INT(11) auto_increment ,
@@ -32,7 +34,7 @@ CREATE UNIQUE INDEX users_email_uindex ON users (email);
  # Set::  ON update set null cascade ON delete cascade set null
  # so that when the users are deleted or updated the articles are not affected
 CREATE TABLE IF NOT EXISTS `articles` (
-`articleID` INT auto_increment primary key,
+`id` INT auto_increment primary key,
 `headline` varchar(70) NOT null,
 `content` varchar(200) null,
 `userID` int NOT NULL,
@@ -77,6 +79,7 @@ VALUES
 #
 CREATE TABLE IF NOT EXISTS `app` (
 `id` INT auto_increment primary key,
+`applicationID` varchar(90) null,
 `versionName` varchar(50) NULL,
 `versionCode`     varchar(50) NULL,
 `userID`      int,
@@ -113,20 +116,20 @@ SHOW CREATE TABLE `articles`;
 # Table category
 #
 CREATE TABLE IF NOT EXISTS `categories` (
-`categoryID` INT auto_increment primary key,
+`id` INT auto_increment primary key,
 `categoryName` varchar(250) null
 )ENGINE = InnoDB;
 
 # Create table products
 #
 CREATE TABLE IF NOT EXISTS `products` (
-`productID` INT auto_increment primary key,
+`id` INT auto_increment primary key,
 `url` varchar(250) null,
 `title` varchar(70) NOT null,
 `desription` varchar(200) null,
 `categoryID` int NOT NULL,
 `price` int null,
- constraint fk_category FOREIGN key (`categoryID`) REFERENCES categories(`categoryID`) ON update cascade ON delete cascade,
+ constraint fk_category FOREIGN key (`categoryID`) REFERENCES categories(`id`) ON update cascade ON delete cascade,
 `created` DATETIME NULL ,
 `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 )ENGINE = InnoDB;
@@ -162,11 +165,16 @@ DROP TABLE IF EXISTS `products`;
 # Create the history table
 #
 
+
+# RESEARCH MORE ON SENDING LOGS TO TH SERVER
+# PROPOSED COLUMN::
+# `appid` int NOT NULL,
+ # constraint fk_Id FOREIGN key (`appid`) REFERENCES app(`id`) ON update cascade ON delete cascade,
+
 CREATE TABLE IF NOT EXISTS `history` (
-`historyID` INT auto_increment primary key,
-`action` varchar(250) null,
-`id` int NOT NULL,
- constraint fk_Id FOREIGN key (`id`) REFERENCES app(`id`) ON update cascade ON delete cascade,
+`id` INT auto_increment primary key,
+`decription` varchar(250) null,
+
 `created` DATETIME NULL ,
 `lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
 )ENGINE = InnoDB;

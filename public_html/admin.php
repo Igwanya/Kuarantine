@@ -85,7 +85,7 @@ if (isset($_SESSION['is_authenticated']) && $_SESSION['is_authenticated']){   ?>
             <li><div class="divider"></div></li>
             <li><a class="subheader">Subheader</a></li>
             <li><a class="waves-effect" href="partials/edit-user.php">Edit</a></li>
-            <li><a class="waves-effect" href="products.php">Add a product</a></li>
+            <li><a class="waves-effect" href="add_product.php">Add a product</a></li>
             <li><a class="waves-effect" href="notifications.php">Send Notifications</a></li>
         </ul>
         <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>

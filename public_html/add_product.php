@@ -10,7 +10,6 @@ namespace Src;
 
 require_once __DIR__ . '../../vendor/autoload.php';
 
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +24,7 @@ require_once __DIR__ . '../../vendor/autoload.php';
     <link href="res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
     <link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
     <link href="res/css/main.css" rel="stylesheet"  media="screen,projection">
-    <title>Notifications</title>
+    <title>Products</title>
 </head>
 <body>
 <nav class="white" id="passwordResetNav">
@@ -48,21 +47,21 @@ require_once __DIR__ . '../../vendor/autoload.php';
             <div class="col-md-7 mt-5">
                 <form enctype="multipart/form-data" method="POST" action="add_product.php">
                     <fieldset>
-                        <legend>Add a notification</legend>
+                        <legend>Add a product</legend>
                         <div class="file-field input-field" id="inputPhoto">
                             <div class="btn">
-                                <label for="notificationPhoto" class="text-light">Upload a picture</label>
-                                <input id="notificationPhoto" type="file" name="notificationfile" class="">
+                                <label for="productPhoto" class="text-light">Upload a picture</label>
+                                <input id="productPhoto" type="file" name="productfile" class="">
                             </div>
                             <div class="file-path-wrapper">
                                 <input class="file-path validate" type="text" />
                             </div>
                             <div class="input-field ">
-                                <select id="inputLevel">
-                                    <option value=""  disabled selected>Choose the level</option>
+                                <select id="inputCategory">
+                                    <option value=""  disabled selected>Choose a product category </option>
                                     <option value="" ></option>
                                 </select>
-                                <label for="inputCategory">LEVEL</label>
+                                <label for="inputCategory">Category</label>
                             </div>
                             <div class="input-field ">
                                 <input id="inputTitle" type="text" name="title" class="validate">
@@ -74,6 +73,11 @@ require_once __DIR__ . '../../vendor/autoload.php';
                                           data-length="250" class="materialize-textarea">
                                 </textarea>
                                 <label for="inputDescription">Description</label>
+                                <span class="helper-text text-danger" data-error="wrong" data-success=""></span>
+                            </div>
+                            <div class="input-field ">
+                                <input id="inputPrice" type="number" name="price" class="validate">
+                                <label for="inputPrice">Price</label>
                                 <span class="helper-text text-danger" data-error="wrong" data-success=""></span>
                             </div>
                             <div class="input-field right">

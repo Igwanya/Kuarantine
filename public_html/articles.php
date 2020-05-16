@@ -3,12 +3,11 @@
  * Created by PhpStorm.
  * User: MUTHUI
  * Date: 16-May-20
- * Time: 5:23 AM
+ * Time: 5:24 AM
  */
 namespace Src;
 
 require_once __DIR__ . '../../vendor/autoload.php';
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +22,7 @@ require_once __DIR__ . '../../vendor/autoload.php';
     <link href="res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
     <link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
     <link href="res/css/main.css" rel="stylesheet"  media="screen,projection">
-    <title>Products</title>
+    <title>Articles</title>
 </head>
 <body>
 
@@ -34,3 +33,4 @@ require_once __DIR__ . '../../vendor/autoload.php';
 <script type="text/javascript" src="res/js/init.js"></script>
 </body>
 </html>
+

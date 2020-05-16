@@ -18,6 +18,8 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");
 header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: application/x-www-form-urlencoded");
+header("Accept: multipart/form-data");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 $requestMethod = $_SERVER["REQUEST_METHOD"];
 if ($requestMethod == 'POST')

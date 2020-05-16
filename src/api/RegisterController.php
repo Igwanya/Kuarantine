@@ -45,18 +45,25 @@ if ($requestMethod == 'POST')
         $result['error']['username_error'] = $register->perform_username_check();
         $result['error']['email_error']    = $register->perform_email_check();
         $register->setFullName($data->full_name);
-        $register->setPassword($data->password); 
+        $register->setPassword($data->password);
+        if (empty($result['error']['username_error'])
+            && empty($result['error']['email_error']))  {
+            $result = $register->register_user();
+        }
     }else{
-       $result['status'] = "Empty fields detected ";
+       $result['status'] = "Empty fields detected | username | 
+       email | full_name | password ";
+       http_response_code(404);
     }
-    if (empty($result['error']['username_error'])
-        && empty($result['error']['email_error']))  {
-         $result = $register->register_user();
-    }
+
     if (empty($result['error']['username_error'])
         && empty($result['error']['email_error'])) {
         $result['status'] = "Sign up successful";
+         $result['body']  = $repository->find_user_with_email($data->email)['body'];
         $result['error']  = array();
+    } else {
+        http_response_code(404);
+        $result['status'] = "Sign up unsuccessful";
     }
     echo json_encode($result);
 }

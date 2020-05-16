@@ -274,7 +274,7 @@ class Register{
         $result = array(
             "status"  => "",
             "body"    => array(),
-            "error"   => ""
+            "error"   => array()
         );
         $repo = new Repository();
         $user = new User();
