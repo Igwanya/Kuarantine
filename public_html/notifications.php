@@ -32,7 +32,7 @@ require_once __DIR__ . '../../vendor/autoload.php';
     <div class="nav-wrapper">
         <ul id="nav-mobile" class="left">
             <li>
-                <a href="admin.php" >
+                <a href="admin/admin.php" >
                     <i id="passwordResetLoginPageIcon" class="material-icons">chevron_left</i>
                 </a></li>
             <li id="passwordResetNavBack" >

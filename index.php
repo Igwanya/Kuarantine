@@ -39,9 +39,9 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
     <div class="nav-wrapper container">
         <a id="logo-container" href="/" class="brand-logo">Logo</a>
         <ul class="right hide-on-med-and-down" id="navList">
-            <li><a href="#" id="indexNavLinkFeatured">Featured</a></li>
-            <li><a href="#" id="indexNavLinkProducts">Products</a></li>
-            <li><a href="#" id="indexNavLinkArticles">Articles</a></li>
+            <li><a href="public_html/featured.php" id="indexNavLinkFeatured">Featured</a></li>
+            <li><a href="public_html/products.php" id="indexNavLinkProducts">Products</a></li>
+            <li><a href="public_html/articles.php" id="indexNavLinkArticles">Articles</a></li>
             <li><a href="#" id="indexNavLinkAbout">About</a></li>
             <li><a href="#" id="indexNavLinkContact">Contact</a></li>
             <?php if ( isset($_SERVER["is_authenticated"])) {?>
@@ -63,8 +63,8 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
         </ul>
         <ul id="nav-mobile" class="sidenav">
             <li><a href="#featured" id="indexNavLinkFeatured">Featured</a></li>
-            <li><a href="#" id="indexNavLinkProducts">Products</a></li>
-            <li><a href="#" id="indexNavLinkArticles">Articles</a></li>
+            <li><a href="public_html/products.php" id="indexNavLinkProducts">Products</a></li>
+            <li><a href="public_html/articles.php" id="indexNavLinkArticles">Articles</a></li>
             <li><a href="#" id="indexNavLinkAbout">About</a></li>
             <li><a href="#" id="indexNavLinkContact">Contact</a></li>
             <?php if ( isset($_SERVER["is_authenticated"])) {?>
@@ -194,7 +194,7 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
             <div class="col l3 s12">
                 <h5 class="white-text">Settings</h5>
                 <ul>
-                    <li><a class="white-text" href="public_html/admin.php">Administrator</a></li>
+                    <li><a class="white-text" href="public_html/admin/admin.php">Administrator</a></li>
                     <li><a class="white-text" href="#!">Link 2</a></li>
                     <li><a class="white-text" href="#!">Link 3</a></li>
                     <li><a class="white-text" href="#!">Link 4</a></li>
