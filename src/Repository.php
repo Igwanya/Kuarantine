@@ -57,17 +57,17 @@ class Repository
             $result['body']['count'] =  $res->num_rows;
             while($row = $res->fetch_assoc()){
               $user = array(
-                  "id"           => $row["id"],
+                  "id"            => $row["id"],
                   "url"           => $row["url"],
-                  "username"     => $row["username"],
-                  "email"        => $row["email"],
-                  "firstName"    => $row["firstName"],
-                  "lastName"     => $row["lastName"],
-                  "fullName"     => $row["fullName"],
-                  "isAdmin"      => $row["isAdmin"],
-                  "passwordHash" => $row["passwordHash"],
-                  "created"      => $row["created"],
-                  "lastUpdated"  => $row["lastUpdated"],
+                  "username"      => $row["username"],
+                  "email"         => $row["email"],
+                  "first_name"     => $row["firstName"],
+                  "last_name"     => $row["lastName"],
+                  "full_name"     => $row["fullName"],
+                  "is_admin"      => $row["isAdmin"],
+                  "password"      => $row["passwordHash"],
+                  "created"       => $row["created"],
+                  "last_updated"  => $row["lastUpdated"],
               );
               array_push($result["body"]["user"], $user);
             }
@@ -754,7 +754,173 @@ class Repository
        $result['body']   = null;
        $result["error"]   = null;
        return $result;
-
    }
-   
+
+    /**
+     * @param $url
+     * @param $title
+     * @param $description
+     * @param $category_id
+     * @param $price
+     * @return array
+     */
+   public function add_product_to_db($url, $title, $description, $category_id,
+                                   $price)
+    {
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => array()
+        );
+        $created = date("Y-m-d");
+        $last_updated  = date("Y-m-d");
+        /* Prepared statement, stage 1: prepare */
+        if (!($stmt = $this->db->prepare("
+        INSERT INTO products(url, title, detail, categoryID, price, created, lastUpdated )
+         VALUES (?,?,?,?,?,?,?)"))) {
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
+        }
+        /* Prepared statement, stage 2: bind and execute */
+        if (!$stmt->bind_param("sssssss",$url, $title, $description,
+            $category_id, $price, $created, $last_updated)) {
+            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        if (!$stmt->execute()) {
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+            $result["status"]  = "Product not created ";
+            $result["error"]   =  $stmt->error;
+        } else {
+            $result["status"] = "Product created ";
+
+        }
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public function load_all_products(){
+        $result = array(
+            "status"   => "" ,
+            "body"  => array(
+                "products"  => array(),
+                "count"   => 0
+            ),
+            "error"    => array()
+        );
+        $sql = "SELECT * FROM products";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $result['body']['count']  = $res->num_rows;
+        if ($res->num_rows > 0){
+            $result['status'] = "Products read ";
+            $result['body']['count'] =  $res->num_rows;
+            while($row = $res->fetch_assoc()){
+                $data = array(
+                    "id"           => $row['id'],
+                    "url"          => $row['url'],
+                    "title"        => $row['title'],
+                    "detail"       => $row['detail'],
+                    "category_id"  => $row['categoryID'],
+                    "price"        => $row['price'],
+                    "created"      => $row['created'],
+                    "last_updated" => $row['lastUpdated']
+                );
+                array_push($result['body']['products'], $data);
+            }
+        } else {
+            $result['status'] = "No categories found ";
+        }
+       return $result;
+    }
+
+    /**
+     * Read all the categories
+     * @return array
+     */
+    public function read_all_categories()
+    {
+        $result = array(
+            "status"   => "" ,
+            "body"     => array(
+                "categories"  => array(
+                    "id"            => 0,
+                    "category_name" => ""
+                ),
+                "count"   => 0
+            ),
+            "error"    => array()
+        );
+        $sql = "SELECT * FROM categories";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $result['body']['count']  = $res->num_rows;
+        if ($res->num_rows > 0){
+            $result['status'] = "Categories read ";
+            while($row = $res->fetch_assoc()){
+                $data = array(
+                    "id"            => $row["id"],
+                    "category_name" => $row['categoryName']
+                );
+                array_push($result['body']['categories'], $data);
+            }
+        } else {
+            $result['status'] = "No categories found ";
+        }
+        return $result;
+    }
+
+    /**
+     * Find a user with a specified username
+     * @param $category_name
+     * @return array
+     */
+    public function find_category_id($category_name)
+    {
+        $result = array(
+            "status"   => "" ,
+            "body"  => array(
+                "category"  => array(
+                    "id"            => 0,
+                    "category_name" => ""
+                ),
+                "count"   => 0
+            ),
+            "error"    => array()
+        );
+        $stmt = $this->db->prepare("SELECT * FROM categories WHERE categoryName LIKE ?");
+        if (!($stmt))
+        {
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error,
+                E_USER_ERROR);
+        }
+        if (!$stmt->bind_param('s', $category_name)){
+            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error,
+                E_ERROR);
+        }
+        if (!$stmt->execute()) {
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error,
+                E_CORE_ERROR);
+            $result["error"]  =  $stmt->error;
+        }
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        if ($row["id"] != null){
+            $result["status"]       = "Query successful";
+            $result["body"]         = array(
+                "category"          => array(
+                    "id"            => $row["id"],
+                    "category_name" => $row["categoryName"]
+                )
+            );
+            return $result;
+        } else {
+            $result['status'] = "No category with that name exists";
+        }
+        return $result;
+    }
+
+
 }
