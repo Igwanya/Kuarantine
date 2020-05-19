@@ -144,7 +144,7 @@ SELECT * FROM `categories`;
 
 # Data for the products table
 #
-INSERT INTO `products`(title, categoryID, created, lastUpdated) VALUES ('Ipad', 1, current_timestamp(), current_timestamp());
+INSERT INTO `products`(title, categoryID, created, lastUpdated) VALUES ('Ipad', 2, current_timestamp(), current_timestamp());
 
 # Select * from products table
 #
