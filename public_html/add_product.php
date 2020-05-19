@@ -8,7 +8,93 @@
 
 namespace Src;
 
+use finfo;
+use http\Exception\RuntimeException;
+
 require_once __DIR__ . '../../vendor/autoload.php';
+
+//header('Content-Type: text/plain; charset=utf-8');
+$result = array();
+$request_method = $_SERVER['REQUEST_METHOD'];
+if ($request_method == 'GET') {
+    $repo = new Repository();
+    $result =  $repo->read_all_categories();
+}
+
+if ($request_method == 'POST') {
+    $repo = new Repository();
+    $result =  $repo->read_all_categories();
+    try {
+        $upload_dir = $_SERVER['DOCUMENT_ROOT'].'/public_html/res/assets/products/';
+        $title = filter_input(INPUT_POST, 'title');
+        $description = filter_input(INPUT_POST, 'inputDescription');
+        $category_name =  filter_input(INPUT_POST, 'category_name');
+        $price = filter_input(INPUT_POST, 'price');
+        // Undefined | Multiple Files | $_FILES Corruption Attack
+        // If this request falls under any of them, treat it invalid.
+        if (
+            !isset($_FILES['productfile']['error']) ||
+            is_array($_FILES['productfile']['error'])
+        ) {
+            throw new RuntimeException('Invalid parameters.');
+        }
+        // Check $_FILES['productfile']['error'] value.
+        switch ($_FILES['productfile']['error']) {
+            case UPLOAD_ERR_OK:
+                break;
+            case UPLOAD_ERR_NO_FILE:
+                throw new RuntimeException('No file sent.');
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+                throw new RuntimeException('Exceeded filesize limit.');
+            default:
+                throw new RuntimeException('Unknown errors.');
+        }
+
+        // You should also check filesize here.
+        if ($_FILES['productfile']['size'] > 1000000) {
+            throw new RuntimeException('Exceeded filesize limit.');
+        }
+
+        // DO NOT TRUST $_FILES['productfile']['mime'] VALUE !!
+        // Check MIME Type by yourself.
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        if (false === $ext = array_search(
+                $finfo->file($_FILES['productfile']['tmp_name']),
+                array(
+                    'jpg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    'gif' => 'image/gif',
+                ),
+                true
+            )) {
+            throw new RuntimeException('Invalid file format.');
+        }
+        
+//        sprintf('./uploads/%s.%s',
+//            sha1_file($_FILES['productfile']['tmp_name']
+        // You should name it uniquely.
+        // DO NOT USE $_FILES['productfile']['name'] WITHOUT ANY VALIDATION !!
+        // On this example, obtain safe unique name from its binary data.
+        $uploadfile =  sha1_file($_FILES['productfile']['tmp_name']).'.'.$ext;
+        if (move_uploaded_file($_FILES['productfile']['tmp_name'],
+            $upload_dir. sha1_file($_FILES['productfile']['tmp_name']).'.'.$ext)) {
+            $raw_url = preg_split("#/#", $upload_dir);
+//            $result_url = $raw_url[3].'/'.$raw_url[4].'/'.$raw_url[5].'/'.$raw_url[6].'/'.$raw_url[7];
+            $result_url = $raw_url[4].'/'.$raw_url[5].'/'.$raw_url[6].'/'.$raw_url[7];
+            $product_url = $result_url.$uploadfile;  // Changes in the server directory structure will break things.
+            $repository = new Repository();
+            $category_id = $repository->find_category_id($category_name)['body']['category']['id'];
+            $repository->add_product_to_db($product_url, $title, $description, $category_id, $price);
+
+        } else {
+            echo "Possible file upload attack!\n";
+        }
+    } catch (RuntimeException $e) {
+        echo $e->getMessage();
+    }
+
+}
 
 ?>
 <!DOCTYPE html>
@@ -31,7 +117,7 @@ require_once __DIR__ . '../../vendor/autoload.php';
     <div class="nav-wrapper">
         <ul id="nav-mobile" class="left">
             <li>
-                <a href="admin.php" >
+                <a href="admin/admin.php" >
                     <i id="passwordResetLoginPageIcon" class="material-icons">chevron_left</i>
                 </a></li>
             <li id="passwordResetNavBack" >
@@ -57,9 +143,16 @@ require_once __DIR__ . '../../vendor/autoload.php';
                                 <input class="file-path validate" type="text" />
                             </div>
                             <div class="input-field ">
-                                <select id="inputCategory">
+                                <select id="inputCategory" name="category_name">
                                     <option value=""  disabled selected>Choose a product category </option>
-                                    <option value="" ></option>
+                                    <?php foreach ($result['body']['categories'] as $value) {
+                                        foreach ($value as $x => $y) {
+                                            if (!is_numeric($y)) {?>
+                                                <option value="<?php echo $y; ?>" ><?php echo $y; ?></option>
+                                            <?php  }
+                                        }
+                                    }
+                                    ?>
                                 </select>
                                 <label for="inputCategory">Category</label>
                             </div>
