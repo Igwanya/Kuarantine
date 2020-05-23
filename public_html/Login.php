@@ -23,24 +23,41 @@ ini_set('html_errors', true);
 
 require_once __DIR__ . '../../vendor/autoload.php';
 
-$web_login               = filter_input(INPUT_POST, 'WEB-LOGIN');
+$request_method = $_SERVER['REQUEST_METHOD'];
 $username_or_email_error = null;
 $password_error          = null;
-if ($web_login == 1)
+
+/**
+ * Handle the form and log in the user
+ */
+function redirect_to_profile_page()
+{
+    /* Redirect to a different page in the current directory that was requested */
+    $host = $_SERVER['HTTP_HOST'];
+    $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+    $extra = 'auth/profile.php';
+    header("Location: http://$host$uri/$extra");
+    exit;
+}
+
+if ($request_method == 'POST')
 {
     $login_frm_credentials   = filter_input(INPUT_POST, 'inputCredentials');
     $login_frm_password      = filter_input(INPUT_POST, 'inputLoginPassword');
     $login = new Login();
-    $login->setUsernameOrEmail($login_frm_credentials);
-    $login->setPassword($login_frm_password);
-    $username_or_email_error = $login->perform_username_or_email_check();
-    $password_error = $login->perform_password_check();
-    if ($login->perform_login()["status"] == false){
-//        TODO:: create a material css toast
-//          echo $login->perform_login()["error"];
+    if (!empty($login_frm_credentials) && !empty($login_frm_password) ) {
+        $login->setUsernameOrEmail($login_frm_credentials);
+        $login->setPassword($login_frm_password);
+        $username_or_email_error = $login->perform_username_or_email_check();
+        $password_error = $login->perform_password_check();
+        header("Location: profile.php");
+//        header("Location: http://".$_SERVER['HTTP_HOST']."/public_html/auth/profile.php");
+//        if ($login->authenticate() == 1){
+//           redirect_to_profile_page();
+//        }
     }
 }
-$login_page = <<<HTML
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,32 +68,41 @@ $login_page = <<<HTML
   <meta name="author" content="felixmuthui32@gmail.com">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="msapplication-tap-highlight" content="no">
+    <link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
   <link href="res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
-  <link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+   <!-- reference your copy Font Awesome here (from our CDN or by hosting yourself) -->
+  <link href="res/vendor/fontawesome/css/fontawesome.css" rel="stylesheet">
+  <link href="res/vendor/fontawesome/css/brands.css" rel="stylesheet">
+  <link href="res/vendor/fontawesome/css/solid.css" rel="stylesheet">
   <link href="res/css/main.css" rel="stylesheet"  media="screen,projection">
-  <link href="res/vendor/fontawesome/css/all.css" rel="stylesheet"/>
   <title>Login</title>
-</head>
+  <style type="text/css">
+    .fa-facebook {
+    color: rgb(59, 91, 152);
+  }
+  
+    </style>
+    </head>
 <body>
   <div class="">
     <div class="row">
-      <div class="col s4"></div>
-      <div class="col s4">
+      <div class="col-md-2"></div>
+      <div class="col-md-5">
         <form action="login.php" method="POST" class="form" id="loginForm">
             <fieldset id="loginFormFieldset">
                 <legend id="loginFormLegend" class="text-danger">Restricted Access</legend>
                 <div class="input-field">
                     <input id="inputCredentials" type="text" class="validate" name="inputCredentials">
-                    <label for="inputCredentials" id="labelInputCredentials">Username or Email</label>
-                    <span class="helper-text" data-error="wrong" data-success="OK">
-                         <p id="loginFormCredentialsHelper">{$username_or_email_error}</p>
+                    <label for="inputCredentials" id="labelInputCredentials"><i class="fas fa-user"></i> Username or Email</label>
+                    <span class="helper-text" data-error="wrong" data-success="">
+                         <p id="loginFormCredentialsHelper"><?php echo $username_or_email_error; ?></p>
                     </span>
                 </div>
                 <div class="input-field">
                   <input id="inputPassword" type="password" class="validate" name="inputLoginPassword">
-                  <label for="inputPassword" id="labelInputPassword" >Password</label>
-                  <span class="helper-text" data-error="wrong" data-success="OK">
-                      <p id="loginFormPasswordHelper">{$password_error}</p> 
+                  <label for="inputPassword" id="labelInputPassword" ><i class="fas fa-key"></i> Password</label>
+                  <span class="helper-text" data-error="wrong" data-success="">
+                      <p id="loginFormPasswordHelper"><?php echo $password_error; ?></p>
                   </span>
                 </div>
                 <div class="input-field right-align">
@@ -91,31 +117,28 @@ $login_page = <<<HTML
                 <div class="" id="loginFormSocials">
                   <p class="center">
                     <a href="#" class="left-align" id="loginFormFacebooklink">
-                      <i class="fa fa-facebook-square fa-2x"></i>  Facebook
+                      <i class="fab fa-facebook fa-2x"></i>  Facebook
                     </a>
                     <a href="#" class="right-align" id="loginFormGoogleLink">
-                        <i class="fa fa-google fa-2x"></i>  Google
+                        <i class="fab fa-google fa-2x"></i> oogle
                     </a>
                   </p>
                 </div>
                 </div>
                 <div id="loginFormRedirect">
-                    <a href="password_reset.php" id="loginFormPasswordReset" class="left left-align">Forgot password ?</a>
-                    <a href="register.php" id="loginFormRegister" class="right right-align">Create an account.</a>
+                    <a href="auth/password_reset.php" id="loginFormPasswordReset" class="left left-align">Forgot password ?</a>
+                    <a href="auth/register.php" id="loginFormRegister" class="right right-align">Create an account.</a>
                 </div>
-            </fieldset>  
-            <input type="hidden" name="WEB-LOGIN"  value="1" />
+            </fieldset>
         </form>
       </div>
-      <div class="col s4"></div>
+      <div class="col-md-2"></div>
     </div>
   </div>
 <script type="text/javascript" src="res/vendor/jquery-3.4.1.js"></script>
 <script type="text/javascript" src="res/vendor/popper.min.js"></script>
-<script type="text/javascript" src="res/vendor/jquery.mobile-1.4.5.js"></script>
 <script type="text/javascript" src="res/vendor/materialize/js/materialize.js"></script>
+<script type="text/javascript" src="res/vendor/jquery.mobile-1.4.5.js"></script>
 <script type="text/javascript" src="res/js/init.js"></script> 
 </body>
 </html>
-HTML;
-echo $login_page;

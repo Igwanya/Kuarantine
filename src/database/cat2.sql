@@ -35,6 +35,7 @@ CREATE UNIQUE INDEX users_email_uindex ON users (email);
  # so that when the users are deleted or updated the articles are not affected
 CREATE TABLE IF NOT EXISTS `articles` (
 `id` INT auto_increment primary key,
+`url` varchar(250) null,
 `headline` varchar(70) NOT null,
 `content` varchar(200) null,
 `userID` int NOT NULL,
@@ -48,9 +49,10 @@ CREATE TABLE IF NOT EXISTS `articles` (
  * Create the admin account
  * Password: Igwanya32
  */
- INSERT INTO `users` (`username`, `email`, `firstName`, `lastName`, `isAdmin`, `passwordHash`, `created`, `lastUpdated`)
+ INSERT INTO `users` (`url`, `username`, `email`, `firstName`, `lastName`, `isAdmin`, `passwordHash`, `created`, `lastUpdated`)
  VALUES
 (
+'img/Thumbnail.png',
 'admin',
 'felixmuthui32@gmail.com',
 'Felix', 
@@ -126,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `products` (
 `id` INT auto_increment primary key,
 `url` varchar(250) null,
 `title` varchar(70) NOT null,
-`desription` varchar(200) null,
+`detail` varchar(200) null,
 `categoryID` int NOT NULL,
 `price` int null,
  constraint fk_category FOREIGN key (`categoryID`) REFERENCES categories(`id`) ON update cascade ON delete cascade,
@@ -144,7 +146,7 @@ SELECT * FROM `categories`;
 
 # Data for the products table
 #
-INSERT INTO `products`(title, categoryID, created, lastUpdated) VALUES ('Ipad', 2, current_timestamp(), current_timestamp());
+INSERT INTO `products`(title, detail, categoryID, created, lastUpdated) VALUES ('Ipad', "An awesome phone",2, current_timestamp(), current_timestamp());
 
 # Select * from products table
 #

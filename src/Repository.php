@@ -12,9 +12,11 @@ use Src\database\DatabaseConnection;
 use Src\models\User;
 
 require_once __DIR__ . '../../vendor/autoload.php';
+date_default_timezone_set('Africa/Nairobi');
 
 class Repository
 {
+
     private $db;
 
     /**
@@ -24,6 +26,8 @@ class Repository
     {
       $mysqli = new DatabaseConnection();
       $this->db = $mysqli->get_db_connection();
+
+
     }
 
     /**
@@ -64,7 +68,7 @@ class Repository
                   "first_name"     => $row["firstName"],
                   "last_name"     => $row["lastName"],
                   "full_name"     => $row["fullName"],
-                  "is_admin"      => $row["isAdmin"],
+                  "is_admin"      => ($row["isAdmin"]) ? true : false,
                   "password"      => $row["passwordHash"],
                   "created"       => $row["created"],
                   "last_updated"  => $row["lastUpdated"],
@@ -87,7 +91,9 @@ class Repository
     {
         $result = array(
             "status"  => "",
-            "body"    => array(),
+            "body"    => array(
+                "user"    => array()
+            ),
             "error"   => array()
         );
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id LIKE ?");
@@ -112,17 +118,17 @@ class Repository
             $result["status"]  = "Query successful";
             $result["body"]    = array(
                 "user"   => array(
-                    "id"           => $row["id"],
+                    "id"            => $row["id"],
                     "url"           => $row["url"],
-                    "username"     => $row["username"],
-                    "email"        => $row["email"],
-                    "firstName"    => $row["firstName"],
-                    "lastName"     => $row["lastName"],
-                    "fullName"     => $row["fullName"],
-                    "isAdmin"      => $row["isAdmin"],
-                    "passwordHash" => $row["passwordHash"],
-                    "created"      => $row["created"],
-                    "lastUpdated"  => $row["lastUpdated"]
+                    "username"      => $row["username"],
+                    "email"         => $row["email"],
+                    "first_name"    => $row["firstName"],
+                    "last_name"     => $row["lastName"],
+                    "full_name"     => $row["fullName"],
+                    "is_admin"      => $row["isAdmin"],
+                    "password"      => $row["passwordHash"],
+                    "created"       => $row["created"],
+                    "last_updated"  => $row["lastUpdated"]
                 )
             );
             return $result;
@@ -167,17 +173,17 @@ class Repository
             $result["status"]  = "Query successful";
             $result["body"]    = array(
                 "user"   => array(
-                    "id"           => $row["id"],
+                    "id"            => $row["id"],
                     "url"           => $row["url"],
-                    "username"     => $row["username"],
-                    "email"        => $row["email"],
-                    "firstName"    => $row["firstName"],
-                    "lastName"     => $row["lastName"],
-                    "fullName"     => $row["fullName"],
-                    "isAdmin"      => $row["isAdmin"],
-                    "passwordHash" => $row["passwordHash"],
-                    "created"      => $row["created"],
-                    "lastUpdated"  => $row["lastUpdated"]
+                    "username"      => $row["username"],
+                    "email"         => $row["email"],
+                    "first_name"    => $row["firstName"],
+                    "last_name"     => $row["lastName"],
+                    "full_name"     => $row["fullName"],
+                    "is_admin"      => $row["isAdmin"],
+                    "password"      => $row["passwordHash"],
+                    "created"       => $row["created"],
+                    "last_updated"  => $row["lastUpdated"]
                 )
             );
             return $result;
@@ -250,19 +256,17 @@ class Repository
      * @param $fullName
      * @param $isAdmin
      * @param $passwordHash
-     * @param $created
-     * @param $lastUpdated
      * @return array
      */
     public function add_user_to_db($url, $username, $email, $firstName,
-                                   $lastName, $fullName, $isAdmin, $passwordHash, $created, $lastUpdated)
+                                   $lastName, $fullName, $isAdmin, $passwordHash)
     {
+        $today = gmdate("n/j/Y g:i:s A") ; // today's date
         $result = array(
             "status"  => "",
             "body"    => array(),
             "error"   => array()
         );
-
         /* Prepared statement, stage 1: prepare */
         if (!($stmt = $this->db->prepare("
         INSERT INTO users(url, username, email, firstName, lastName, fullName, isAdmin,
@@ -271,17 +275,15 @@ class Repository
         }
         /* Prepared statement, stage 2: bind and execute */
         if (!$stmt->bind_param("ssssssssss",$url, $username, $email,
-            $firstName, $lastName, $fullName,   $isAdmin, $passwordHash, $created, $lastUpdated)) {
+            $firstName, $lastName, $fullName,   $isAdmin, $passwordHash, $today , $today )) {
             trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
         }
         if (!$stmt->execute()) {
             trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
             $result["status"]  = "User insertion failed";
-            $result["body"]    = null;
             $result["error"]   =  $stmt->error;
         } else {
             $result["status"] = "Insertion success";
-            $result["error"]   = null;
         }
         return $result;
     }
@@ -356,14 +358,14 @@ class Repository
      * @param $userID
      * @return array
      */
-    public function add_post($headline, $content, $userID)
+    public function add_post($url, $headline, $content, $userID)
     {
         $result = array(
             "status"  => "",
             "body"    => array(),
             "error"   => ""
         );
-        $insert_stmt = "INSERT INTO articles (headline, content, created, userID) VALUES (?,?,?,?)";
+        $insert_stmt = "INSERT INTO articles (url, headline, content, created, userID) VALUES (?,?,?,?,?)";
         /* Prepared statement, stage 1: prepare */
         if (!($stmt = $this->db->prepare($insert_stmt))) {
             trigger_error("Prepare failed: (" . $this->db->errno . ") "
@@ -371,7 +373,7 @@ class Repository
         }
         $created = date("Y-m-d");
         /* Prepared statement, stage 2: bind and execute */
-        if (!$stmt->bind_param("sssi", $headline, $content, $created, $userID)) {
+        if (!$stmt->bind_param("ssssi", $url,$headline, $content, $created, $userID)) {
             trigger_error("Binding parameters failed: (" . $stmt->errno . ") "
                 . $stmt->error);
         }
@@ -382,9 +384,6 @@ class Repository
             $result["error"] =  $stmt->error;
         } else {
             $result["status"] = "Article inserted successfully";
-//            TODO:: decide whether to return the posted article
-            $result["body"] = null;
-            $result["error"]   = null;
             return $result;
         }
         return $result;
@@ -398,17 +397,12 @@ class Repository
         $result = array(
             "status"   => "" ,
             "body"  => array(
-                "articleID"         => 0,
-                "headline"          => "",
-                "content"           => "",
-                "userID"            => "",
-                "created"           => "",
-                "lastUpdated"       => ""
+                "article"  => array()
             ),
-            "error"    => ""
+            "error"    => array()
         );
         
-        $sql =  "SELECT * FROM articles WHERE articleID LIKE ?";
+        $sql =  "SELECT * FROM articles WHERE id LIKE ?";
         $stmt = $this->db->prepare($sql);
         $articleID = filter_var($articleID, FILTER_VALIDATE_INT);
         /* Prepared statement, stage 2: bind and execute */
@@ -420,25 +414,26 @@ class Repository
         if (!$stmt->execute()) {
             trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
             $result['status']  = "Article read unsuccessful";
-            $result["body"] = null;
             $result["error"] = $stmt->error;
         } else {
             $res = $stmt->get_result();
             $row = $res->fetch_assoc();
-            if ($row['articleID'] != null){
-                $result["body"]['articleID']   =  $row['articleID'];
-                $result["body"]['headline']    =  $row['headline'];
-                $result["body"]['content']     =  $row['content'];
-                $result["body"]['userID']      =  $row['userID'];
-                $result["body"]['created']     =  $row['created'];
-                $result["body"]['lastUpdated'] =  $row['lastUpdated'];
+            if ($row['id'] != null){
+                $result['body']['article'] = array(
+                    'id'           => $row['id'],
+                    'url'          => $row['url'],
+                    'headline'     => $row['headline'],
+                    'content'      => html_entity_decode($row['content']),
+                    'user_id'       => $row['userID'],
+                    'created'      => $row['created'],
+                    'last_updated' => $row['lastUpdated']
+                );
                 $result['status']  = "Article read successfully";
-                $result["error"]   = null;
                 return $result;
             } else {
                 // TODO:: Be careful,  call from api request ONLY!!!
                 header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-                $result["body"] = null;
+                $result["body"] = array();
                 $result["error"] = "No Article found";
             }
         }
@@ -454,14 +449,10 @@ class Repository
          $result = array(
              "status"   => "" ,
              "body"  => array(
-                 "articleID"         => 0,
-                 "headline"          => "",
-                 "content"           => "",
-                 "userID"            => "",
-                 "created"           => "",
-                 "lastUpdated"       => ""
+                 "articles"  => array(),
+                 "count"    => 0
              ),
-             "error"    => ""
+             "error"    => array()
          );
          $sql = "SELECT * FROM articles";
          $stmt = $this->db->prepare($sql);
@@ -469,19 +460,20 @@ class Repository
          $res = $stmt->get_result();
          if ($res->num_rows > 0){
              $result['status'] = "Article read successful";
+             $result['body']['count']  = $res->num_rows;
              while($row = $res->fetch_assoc()){
-                 $post_data = [
-                     'articleID'   => $row['articleID'],
+                 $data = [
+                     'id'          => $row['id'],
+                     'url'         => $row['url'],
                      'headline'    => $row['headline'],
                      'content'     => html_entity_decode($row['content']),
                      'userID'      => $row['userID'],
                      'created'     => $row['created'],
-                     'lastUpdated' => $row['lastUpdated']
+                     'last_updated' => $row['lastUpdated']
                  ];
-                 array_push($result['body'], $post_data);
+                 array_push($result['body']['articles'], $data);
              }
          } else {
-             $result['body'] = null;
              $result['status'] = "No Articles yet! ";
          }
          return $result;
@@ -496,7 +488,7 @@ class Repository
      */
    public function update_post($articleID, $headline, $content, $userID)
    {
-       $sql = "UPDATE articles SET headline=?, content=?, userID=?, lastUpdated=? WHERE articleID=?";
+       $sql = "UPDATE articles SET headline=?, content=?, userID=?, lastUpdated=? WHERE id=?";
        $result = array(
            "status" => "",
            "body" => array(),
@@ -534,13 +526,13 @@ class Repository
      */
    public function delete_post($articleID)
    {
-       $sql = "DELETE FROM articles WHERE articleID=?";
+       $sql = "DELETE FROM articles WHERE id=?";
        $result = array(
            "status" => "",
            "body" => array(),
-           "error"   => ""
+           "error"   => array()
        );
-       /*epared statement, stage 1: prepare */
+       /* prepared statement, stage 1: prepare */
        if (!($stmt = $this->db->prepare($sql))) {
            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
        }
@@ -550,14 +542,11 @@ class Repository
        }
        if (!$stmt->execute()) {
            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
-           $result["body"]   = null;
            $result["status"] = "Article not deleted Invalid ID.";
            $result['error']  =  $stmt->error;
            return $result;
        }
        $result["status"] = "Article deleted successfully.";
-       $result["body"]   = null;
-       $result["error"]   = null;
        return $result;
    }
 
@@ -606,13 +595,17 @@ class Repository
    }
 
     /**
+     * Retrieve all data that apps have submitted
      * @return array
      */
-   public function read_app_data(){
+   public function load_all_apps_data(){
        $result = array(
            "status" => "" ,
-           "body" => array(),
-           "error"   => ""
+           "body" => array(
+               "app"   => array(),
+               "count" => 0
+           ),
+           "error"   => array()
        );
        $sql = "SELECT * FROM app";
        $stmt = $this->db->prepare($sql);
@@ -620,33 +613,39 @@ class Repository
        $res = $stmt->get_result();
        if ($res->num_rows > 0){
            $result['status'] = "Reading app data ...";
-           $result['error'] = null;
+           $result['body']['count']  = $res->num_rows;
            while($row = $res->fetch_assoc()){
                $data = [
-                   "appID"             => $row['appID'],
-	               "app_version"       => $row['app_version'],
-                   "model"             => $row['model'],
-                   "user"              => $row['user'],
-                   "api_level"         => $row['api_level'],
-                   "screen_resolution" => $row['screen_resolution'],
-                   "screen_density"    => $row['screen_density']
+                   "id"              => $row['id'],
+	               "app_id"          => $row['applicationID'],
+                   "version_name"    => $row['versionName'],
+                   "version_code"    => $row['versionCode'],
+                   "user_id"         => $row['userID'],
+                   "display"         => $row['display'],
+                   "created"         => $row['created'],
+                   "last_updated"    => $row['lastUpdated']
                ];
-               array_push($result['body'], $data);
+               array_push($result['body']['app'], $data);
            }
        } else {
-           $result['body'] = null;
            $result['error'] = "Application data not present ... ";
        }
        return $result;
    }
 
+    /**
+     * @param $appID
+     * @return array
+     */
    public function read_app_data_by_id($appID){
        $result = array(
            "status" => "" ,
-           "body" => array(),
-           "error"   => ""
+           "body" => array(
+               "app" => array()
+           ),
+           "error"   => array()
        );
-       $sql = "SELECT * FROM app WHERE appID LIKE ?";
+       $sql = "SELECT * FROM app WHERE id LIKE ?";
        $stmt = $this->db->prepare($sql);
        /* Prepared statement, stage 2: bind and execute */
        if (!$stmt->bind_param("i",$appID)) {
@@ -660,17 +659,17 @@ class Repository
            $result['status'] = "Reading app data ...";
            $result['error'] = null;
            $row = $res->fetch_assoc();
-           $result['body'] = [
-               "appID"             => $row['appID'],
-               "app_version"       => $row['app_version'],
-               "model"             => $row['model'],
-               "user"              => $row['user'],
-               "api_level"         => $row['api_level'],
-               "screen_resolution" => $row['screen_resolution'],
-               "screen_density"    => $row['screen_density']
+           $result['body']['app'] = [
+               "id"              => $row['id'],
+               "app_id"          => $row['applicationID'],
+               "version_name"    => $row['versionName'],
+               "version_code"    => $row['versionCode'],
+               "user_id"         => $row['userID'],
+               "display"         => $row['display'],
+               "created"         => $row['created'],
+               "last_updated"    => $row['lastUpdated']
            ];
        } else {
-           $result['body'] = null;
            $result['status'] = "Application data not present ... ";
            $result['error']  = "Invalid Application id";
        }
@@ -678,23 +677,24 @@ class Repository
    }
 
     /**
-     * @param $appID
-     * @param $app_version
-     * @param $model
-     * @param $user
-     * @param $api_level
-     * @param $screen_resolution
-     * @param $screen_density
+     * @param $id
+     * @param $application_id
+     * @param $version_name
+     * @param $version_code
+     * @param $user_id
+     * @param $user_id
+     * @param $display
      * @return array
      */
-   public function update_app_data($appID, $app_version, $model, $user,
-                                   $api_level, $screen_resolution, $screen_density){
-       $sql = "UPDATE app SET app_version=?, model=?, user=?,
-                  api_level=?, screen_resolution=?, screen_density=? WHERE appID=?";
+   public function update_app_data($id, $application_id, $version_name, $version_code, $user_id, $display){
+       $sql = "UPDATE app SET applicationID=?, versionName=?, versionCode=?,
+                  userID=?, display=?,  WHERE id=?";
        $result = array(
            "status" => "",
-           "body" => array(),
-           "error"   => ""
+           "body" => array(
+               "app" => array()
+           ),
+           "error"   => array()
        );
        /* Prepared statement, stage 1: prepare */
        if (!($stmt = $this->db->prepare($sql))) {
@@ -702,8 +702,8 @@ class Repository
                $this->db->error);
        }
        /* Prepared statement, stage 2: bind and execute */
-       if (!$stmt->bind_param("ssssssi",$app_version, $model, $user,
-           $api_level, $screen_resolution, $screen_density,$appID)) {
+       if (!$stmt->bind_param("sssssi",$application_id, $version_name, $version_code,
+           $user_id, $display, $id)) {
            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
        }
        if (!$stmt->execute()) {
@@ -714,8 +714,7 @@ class Repository
            return $result;
        } else {
            $result["status"] = "App data updated successfully.";
-           $result["body"]   = $this->read_app_data_by_id($appID)['body'];
-           $result['error']  = null;
+           $result["body"]   = $this->read_app_data_by_id($id)['body']['app'];
        }
 
        return $result;
@@ -727,7 +726,7 @@ class Repository
      */
    public function delete_app_data($appID)
    {
-       $sql = "DELETE FROM app WHERE appID=?";
+       $sql = "DELETE FROM `app` WHERE `app`.`id` = ?";
        $result = array(
            "status"  => "",
            "body" => "",
@@ -746,13 +745,10 @@ class Repository
        if (!$stmt->execute()) {
            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
            $result['status'] = "App data not deleted Invalid ID.";
-           $result["body"] = null;
            $result["error"] = $stmt->error;
            return $result;
        }
        $result["status"] = "App data deleted successfully.";
-       $result['body']   = null;
-       $result["error"]   = null;
        return $result;
    }
 

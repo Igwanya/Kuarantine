@@ -18,10 +18,6 @@ class Register{
 
     private $m_email;
 
-    private $m_first_name;
-
-    private $m_last_name;
-
     private $m_password;
 
     private $conn;
@@ -30,20 +26,6 @@ class Register{
         "username_error"   => "",
         "email_error"      => "",
         "password_error"   => ""
-    );
-    /** @var array Blueprint of what the new user looks like */
-    public $register_correct_inputs = array(
-        "url"         => "" ,
-        "username"     => "",
-        "email"        => "",
-        "first_name"   => "",
-        "last_name"    => "",
-        "full_name"    => "",
-        "is_admin"     => 0,
-        "password"     => "",
-        "created"      => "",
-        "last_updated" => "",
-        "expiry_date"  => ""
     );
 
     /**
@@ -57,6 +39,15 @@ class Register{
 
     private $url;
 
+
+    /**
+     * @param mixed $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
+
     /**
      * @return string
      */
@@ -66,12 +57,13 @@ class Register{
     }
 
     /**
-     * @param mixed $url
+     * @param string $username
+     * @return Register
      */
-    public function setUrl($url)
+    public function setUsername($username)
     {
-        $this->url = $url;
-        $this->register_correct_inputs['url']  = $this->url;
+        $this->m_username = $username;
+        return $this;
     }
 
     /**
@@ -79,32 +71,7 @@ class Register{
      */
     public function getUsername() : string
     {
-        if (!empty($this->m_username) && $this->m_username !=null){
-            return $this->m_username;
-        }
         return $this->m_username;
-    }
-
-    /**
-     * @param string $username
-     * @return Register
-     */
-    public function setUsername($username)
-    {
-        $this->m_username = $username;
-        $this->register_correct_inputs['username']  = $this->m_username;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail()  : string
-    {
-        if (!empty($this->m_email && $this->m_email !=null )) {
-            return $this->m_email;
-        }
-        return $this->m_email = "";
     }
 
     /**
@@ -114,52 +81,24 @@ class Register{
     public function setEmail($email)
     {
         $this->m_email = $email;
-        $this->register_correct_inputs['email']  = $this->m_email;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getFirstName() : string
+    public function getEmail()  : string
     {
-        if (!empty($this->m_first_name) &&
-            $this->m_first_name !=null) {
-            return $this->m_first_name;
-        }
-        return $this->m_email = "";
+        return $this->m_email;
     }
 
     /**
-     * @param string $first_name
+     * @param string $password
      * @return Register
      */
-    public function setFirstName($first_name)
+    public function setPassword($password)
     {
-        $this->m_first_name = $first_name;
-        $this->register_correct_inputs['first_name']  = $this->m_first_name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastName()
-    {
-        if (!empty($this->m_last_name) && $this->m_last_name !=null){
-            return $this->m_last_name;
-        }
-        return $this->m_last_name = "";
-    }
-
-    /**
-     * @param string $last_name
-     * @return Register
-     */
-    public function setLastName($last_name)
-    {
-        $this->m_last_name = $last_name;
-        $this->register_correct_inputs['last_name']  = $this->m_last_name;
+        $this->m_password = $password;
         return $this;
     }
 
@@ -171,35 +110,60 @@ class Register{
         return $this->m_password;
     }
 
-    /**
-     * @param string $password
-     * @return Register
-     */
-    public function setPassword($password)
-    {
-        $this->m_password = $password;
-        $this->register_correct_inputs['password']  = $this->m_password;
-        return $this;
-    }
+    private $full_name;
 
-    private $fullName;
+    /**
+     * @param mixed $full_name
+     */
+    public function set_full_name($full_name)
+    {
+        $this->full_name = $full_name;
+    }
 
     /**
      * @return mixed
      */
-    public function getFullName()
+    public function get_full_name()
     {
-        return $this->fullName;
+        return $this->full_name;
+    }
+
+    private $first_name;
+
+
+    /**
+     * @param mixed $first_name
+     */
+    public function set_first_name($first_name)
+    {
+        $this->first_name = $first_name;
     }
 
     /**
-     * @param mixed $fullName
+     * @return mixed
      */
-    public function setFullName($fullName)
+    public function get_first_name()
     {
-        $this->fullName = $fullName;
-        $this->register_correct_inputs['full_name']  = $this->fullName;
+        return $this->first_name;
     }
+
+    /**
+     * @param mixed $last_name
+     */
+    public function set_last_name($last_name)
+    {
+        $this->last_name = $last_name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function get_last_name()
+    {
+        return $this->last_name;
+    }
+
+    private $last_name;
 
     /**
      * Checks the username if it already exists.
@@ -226,9 +190,6 @@ class Register{
         if ($row['username'] != null )
         {
             $this->register_form_errors['username_error'] = "Username already exists.";
-        } else {
-            $this->register_correct_inputs['username'] = $username;
-            $this->register_form_errors['username_error'] = null;
         }
         return $this->register_form_errors['username_error'];
     }
@@ -253,23 +214,26 @@ class Register{
         $row = $res->fetch_assoc();
         if ($row['email'] != null ) {
             $this->register_form_errors['email_error'] = "Email already exists.";
-        } else {
-            $this->register_correct_inputs['email'] = $email;
-            $this->register_form_errors['email_error'] = null;
         }
         return $this->register_form_errors['email_error'];
     }
 
     /**
-     * @return array
+     * Handle the form and log in the user
      */
-    public function getRegisterCorrectInputs(): array
+    public function redirect_to_profile_page()
     {
-        $this->register_correct_inputs['created']      = date("Y-m-d");
-        $this->register_correct_inputs['last_updated'] = date("Y-m-d");
-        return $this->register_correct_inputs;
+        /* Redirect to a different page in the current directory that was requested */
+        $host = $_SERVER['HTTP_HOST'];
+        $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+        $extra = 'profile.php';
+        header("Location: http://$host$uri/$extra");
+        exit;
     }
 
+    /**
+     * Register the user and log them in
+     */
     public function register_user(){
         $result = array(
             "status"  => "",
@@ -278,29 +242,22 @@ class Register{
         );
         $repo = new Repository();
         $user = new User();
-        $user->set_email($this->getRegisterCorrectInputs()['email']);
+        $user->set_email($this->getEmail());
         $user->set_password_hash($this->getPassword());
-        $result =  $repo->add_user_to_db(
-            $this->getRegisterCorrectInputs()['url'],
-            $this->getRegisterCorrectInputs()['username'],
-            $this->getRegisterCorrectInputs()['email'],
-            $this->getRegisterCorrectInputs()["first_name"],
-            $this->getRegisterCorrectInputs()["last_name"],
-            $this->getRegisterCorrectInputs()['full_name'],
-            $this->getRegisterCorrectInputs()["is_admin"],
-            $user->get_password_hash(),
-            $this->getRegisterCorrectInputs()["created"],
-            $this->getRegisterCorrectInputs()["last_updated"]
-        );
-        return $result;
-    }
+        $result =  $repo->add_user_to_db($this->url,
+            $this->m_username, $this->m_email, $this->first_name,
+            $this->last_name, $this->full_name, false, $user->get_password_hash());
+        if (empty($result['error'])){
+            $user = $repo->find_user_with_email($this->m_email)['body']['user'];
+            if (!isset($_SESSION['is_authenticated'])
+                || isset($_SESSION['is_authenticated']) ||
+                !isset($_SESSION['login_ID']) || isset($_SESSION['login_ID'])){
+                $_SESSION['is_authenticated']  = true;
+                $_SESSION['login_ID']  = $user['id'];
+                $this->redirect_to_profile_page();
+            }
+        }
 
-    public function performLogin(){
-        $login = new Login();
-        $login->setUsernameOrEmail($this->getRegisterCorrectInputs()['email']);
-        $login->setPassword($this->m_password);
-        $login->perform_username_check($this->getRegisterCorrectInputs()['username']);
-        $login->perform_login();
     }
 
 

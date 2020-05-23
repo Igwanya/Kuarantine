@@ -5,6 +5,11 @@
  * Date: 25-Mar-20
  * Time: 9:49 AM
  */
+
+namespace Src;
+
+require_once __DIR__ . '../vendor/autoload.php';
+
 session_start();
 
 setcookie("MyCookie[foo]", 'Testing 1', time()+3600);
@@ -18,6 +23,12 @@ setcookie('count', $count, time()+3600);
 $host  = $_SERVER['HTTP_HOST'];
 $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 //$_SERVER["is_authenticated"] = true;
+$repository = new Repository();
+$user = array();
+if (isset($_SESSION['login_ID'])) {
+    $user = $repository->find_user_with_id($_SESSION['login_ID'])['body']['user'];
+}
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -31,8 +42,11 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
     <meta name="msapplication-tap-highlight" content="no">
     <link href="public_html/res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
     <link href="public_html/res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+    <link href="public_html/res/vendor/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="public_html/res/vendor/fontawesome/css/brands.css" rel="stylesheet">
+    <link href="public_html/res/vendor/fontawesome/css/solid.css" rel="stylesheet">
     <link href="public_html/res/css/main.css" rel="stylesheet"  media="screen,projection">
-    <title><?php echo $host;?></title>
+    <title>Kuarantine</title>
 </head>
 <body>
 <nav class="white" role="navigation" id="indexNav">
@@ -44,22 +58,18 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
             <li><a href="public_html/articles.php" id="indexNavLinkArticles">Articles</a></li>
             <li><a href="#" id="indexNavLinkAbout">About</a></li>
             <li><a href="#" id="indexNavLinkContact">Contact</a></li>
-            <?php if ( isset($_SERVER["is_authenticated"])) {?>
-                <?php if ( !$_SERVER["is_authenticated"]){ ?>
-                    <li><a href="public_html/login.php" id="indexLinkLogin">Login</a></li>
-                    <li><a href="public_html/register.php" id="indexLinkRegister">Register</a></li>
+            <?php if ( isset($_SESSION["is_authenticated"]) && $_SESSION["is_authenticated"] != 1 ) {?>
+                    <li><a href="public_html/login.php" id="indexLinkLogin"> <i class="fas fa-sign-in-alt fa-1x"></i> Login</a></li>
+                    <li><a href="public_html/register.php" id="indexLinkRegister"> <i class="fas fa-user fa-1x"></i> Register</a></li>
                 <?php } else { ?>
                     <li>
                         <ul>
-                            <li><a href="public_html/profile.php" id="indexLinkProfile"><i class="material-icons">account_circle</i></a></li>
-                            <li><a href="public_html/profile.php" id="indexLinkProfile">My Account</a></li>
+                            <li><a href="public_html/profile.php" id="indexLinkProfile"><i class="fas fa-user-circle"></i></a></li>
+                            <li><a href="public_html/profile.php" id="indexLinkProfile"> | <?php echo $user['username']; ?></a></li>
                         </ul>
                     </li>
-                <?php } ?>
-            <?php } else { ?>
-                <li><a href="public_html/login.php" id="indexLinkLogin">Login</a></li>
-                <li><a href="public_html/register.php" id="indexLinkRegister">Register</a></li>
             <?php } ?>
+
         </ul>
         <ul id="nav-mobile" class="sidenav">
             <li><a href="#featured" id="indexNavLinkFeatured">Featured</a></li>
@@ -84,7 +94,7 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
             <li><a href="public_html/register.php" id="indexLinkRegister">Register</a></li>
             <?php } ?>
         </ul>
-        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="fas fa-bars">menu</i></a>
     </div>
 </nav>
 <div id="index-banner" class="parallax-container">
@@ -110,14 +120,14 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
         <div class="row">
             <div class="col s12 m4">
                 <div class="icon-block">
-                    <h2 class="center brown-text"><i class="material-icons">add_shopping_cart</i></h2>
+                    <h2 class="center brown-text"><i class="fas fa-shopping-basket fa-2x"></i></h2>
                     <h5 class="center">Products</h5>
                     <p class="light">We did most of the heavy lifting for you to provide access to merchants that are ready to sell their products. Anything that you could possible need when in quarantine we have it for you on the platform</p>
                 </div>
             </div>
             <div class="col s12 m4">
                 <div class="icon-block">
-                    <h2 class="center brown-text"><i class="material-icons">group</i></h2>
+                    <h2 class="center brown-text"><i class="fab fa-uikit fa-2x"></i></h2>
                     <h5 class="center">User Experience Focused</h5>
                     <p class="light">By utilizing elements and principles of Material Design, we were able to create an application that incorporates components and animations that provide more feedback to users.
                         Additionally, a single underlying responsive system across all platforms allow for a more unified user experience.</p>
@@ -125,7 +135,7 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
             </div>
             <div class="col s12 m4">
                 <div class="icon-block">
-                    <h2 class="center brown-text"><i class="material-icons">settings</i></h2>
+                    <h2 class="center brown-text"><i class="fas fa-newspaper fa-2x"></i></h2>
                     <h5 class="center">Articles</h5>
                     <p class="light">We have provided detailed articles as well as user shared on the COVID-19 virus tips to help get started. We are also always open to feedback and can answer any questions a user may have about the quarantine situation.</p>
                 </div>
@@ -220,8 +230,9 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 <!--  Scripts-->
 <script src="public_html/res/vendor/jquery-3.4.1.js"></script>
 <script src="public_html/res/vendor/popper.min.js"></script>
-<script src="public_html/res/vendor/jquery.mobile-1.4.5.js"></script>
 <script src="public_html/res/vendor/materialize/js/materialize.js"></script>
-<script src="public_html/res/js/init.js"></script> 
+<script src="public_html/res/vendor/jquery.mobile-1.4.5.js"></script>
+<script src="public_html/res/vendor/fontawesome/js/fontawesome.min.js"></script>
+<script src="public_html/res/js/init.js"></script>
 </body>
 </html>

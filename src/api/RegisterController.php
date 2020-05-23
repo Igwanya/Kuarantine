@@ -44,7 +44,7 @@ if ($requestMethod == 'POST')
         $register->setEmail($data->email);
         $result['error']['username_error'] = $register->perform_username_check();
         $result['error']['email_error']    = $register->perform_email_check();
-        $register->setFullName($data->full_name);
+        $register->set_full_name($data->full_name);
         $register->setPassword($data->password);
         if (empty($result['error']['username_error'])
             && empty($result['error']['email_error']))  {

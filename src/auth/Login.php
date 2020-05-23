@@ -11,6 +11,7 @@ require_once __DIR__ . '../../../vendor/autoload.php';
 
 use Src\database\DatabaseConnection;
 use Src\models\User;
+use function Src\redirect_to_profile_page;
 
 class Login{
     private $username_or_email;
@@ -187,19 +188,6 @@ class Login{
         return $this->login_frm_inputs_errors['credentials_error'];
     }
 
-    /**
-     * Handle the form and log in the user
-     */
-    public function redirect_to_profile_page()
-    {
-        /* Redirect to a different page in the current directory that was requested */
-        $host = $_SERVER['HTTP_HOST'];
-        $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-        $extra = 'profile.php';
-        header("Location: http://$host$uri/$extra");
-        exit;
-    }
-
     public function perform_password_check(){
         if (password_verify($this->getPassword(), $this->login_frm_inputs['password'])){
             $this->login_frm_inputs_errors['password_error'] = "";
@@ -209,21 +197,19 @@ class Login{
         return $this->login_frm_inputs_errors['password_error'];
     }
 
-    public function perform_login(){
-        $result = array(
-            "status" => false,
-            "error"  => ""
-        );
+    /**
+     * Set the session var
+     * @return bool
+     */
+    public function authenticate(){
+        $result = false;
         if (empty($this->perform_username_or_email_check()) &&
-            empty($this->perform_password_check()) )  {
-            $_SESSION['is_authenticated'] = true;
-            $result["status"]  = true;
-            $this->redirect_to_profile_page();
-        } else {
-            $result["status"]  = false;
-            $result["error"] = "Login process halted ";
+            empty($this->perform_password_check()) ) {
+            if (!isset($_SESSION['is_authenticated'])) {
+                $_SESSION['is_authenticated'] = true;
+                $result = true;
+            }
         }
-//        header("Location: http://www.reelgood.com/public_html/login.php",FALSE,200);
         return $result;
     }
 

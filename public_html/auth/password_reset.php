@@ -9,7 +9,7 @@ namespace Src;
 
 use PDO;
 
-require_once __DIR__ . '../../vendor/autoload.php';
+require_once __DIR__ . '../../../vendor/autoload.php';
 
 date_default_timezone_set('Africa/Nairobi');
 
@@ -19,7 +19,7 @@ $password_reset_email_error = array(
     "error" => ""
 );
 
-$password_reset_page_success =<<<HTML
+$password_reset_page_success = <<<HTML
  <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,9 +30,9 @@ $password_reset_page_success =<<<HTML
     <meta name="author" content="felixmuthui32@gmail.com">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
-    <link href="res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
-    <link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
-    <link href="res/css/main.css?lastModified=Sun, 05 Apr 2020 08:32:00 GMT" rel="stylesheet"  media="screen,projection">
+    <link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
+    <link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+    <link href="../res/css/main.css?lastModified=Sun, 05 Apr 2020 08:32:00 GMT" rel="stylesheet"  media="screen,projection">
     <title>Email sent</title>
 </head>
 <body>
@@ -40,7 +40,7 @@ $password_reset_page_success =<<<HTML
     <div class="nav-wrapper">
         <ul id="nav-mobile" class="left">
             <li>
-                <a href="login.php" >
+                <a href="../login.php" >
                     <i id="passwordResetLoginPageIcon" class="material-icons">chevron_left</i>
             </a></li>
             <li id="passwordResetNavBack" >
@@ -60,12 +60,12 @@ $password_reset_page_success =<<<HTML
         </div>
     </div>
 </section>
-<script type="text/javascript" src="res/vendor/jquery-3.4.1.js"></script>
-<script type="text/javascript" src="res/vendor/popper.min.js"></script>
-<script type="text/javascript" src="res/vendor/jquery.mobile-1.4.5.js"></script>
-<script type="text/javascript" src="res/vendor/materialize/js/materialize.js"></script>
-<script type="text/javascript" src="res/vendor/fontawesome/js/all.js"></script>
-<script type="text/javascript" src="res/js/init.js"></script> 
+<script type="text/javascript" src="../res/vendor/jquery-3.4.1.js"></script>
+<script type="text/javascript" src="../res/vendor/popper.min.js"></script>
+<script type="text/javascript" src="../res/vendor/jquery.mobile-1.4.5.js"></script>
+<script type="text/javascript" src="../res/vendor/materialize/js/materialize.js"></script>
+<script type="text/javascript" src="../res/vendor/fontawesome/js/all.js"></script>
+<script type="text/javascript" src="../res/js/init.js"></script> 
 </body>
 </html>
 HTML;
@@ -200,9 +200,9 @@ $password_reset_page = <<<HTML
     <meta name="author" content="felixmuthui32@gmail.com">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
-    <link href="res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
-    <link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
-    <link href="res/css/main.css?lastModified=Sun, 05 Apr 2020 08:32:00 GMT" rel="stylesheet"  media="screen,projection">
+    <link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
+    <link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+    <link href="../res/css/main.css?lastModified=Sun, 05 Apr 2020 08:32:00 GMT" rel="stylesheet"  media="screen,projection">
     <title>Reset password</title>
 </head>
 <body>
@@ -210,7 +210,7 @@ $password_reset_page = <<<HTML
     <div class="nav-wrapper">
         <ul id="nav-mobile" class="left">
             <li>
-                <a href="login.php" >
+                <a href="../login.php" >
                     <i id="passwordResetLoginPageIcon" class="material-icons">chevron_left</i>
             </a></li>
             <li id="passwordResetNavBack" >
@@ -243,12 +243,12 @@ $password_reset_page = <<<HTML
         </div>
     </div>
 </section>
-<script type="text/javascript" src="res/vendor/jquery-3.4.1.js"></script>
-<script type="text/javascript" src="res/vendor/popper.min.js"></script>
-<script type="text/javascript" src="res/vendor/jquery.mobile-1.4.5.js"></script>
-<script type="text/javascript" src="res/vendor/materialize/js/materialize.js"></script>
-<script type="text/javascript" src="res/vendor/fontawesome/js/all.js"></script>
-<script type="text/javascript" src="res/js/init.js"></script> 
+<script type="text/javascript" src="../res/vendor/jquery-3.4.1.js"></script>
+<script type="text/javascript" src="../res/vendor/popper.min.js"></script>
+<script type="text/javascript" src="../res/vendor/jquery.mobile-1.4.5.js"></script>
+<script type="text/javascript" src="../res/vendor/materialize/js/materialize.js"></script>
+<script type="text/javascript" src="../res/vendor/fontawesome/js/all.js"></script>
+<script type="text/javascript" src="../res/js/init.js"></script> 
 </body>
 </html>
 HTML;

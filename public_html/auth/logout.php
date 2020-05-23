@@ -13,22 +13,11 @@ error_reporting(E_ALL);
 ini_set('display_errors', true);
 ini_set('html_errors', true);
 
-require_once __DIR__ . '../../vendor/autoload.php';
+require_once __DIR__ . '../../../vendor/autoload.php';
 
-/**
- * Redirect the user to the home page.
- */
-function redirect_to_index_page()
-{
-    /* Redirect to a different page in the current directory that was requested */
-    $host = $_SERVER['HTTP_HOST'];
-    $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-    $extra = 'index.php';
-    header("Location: http://$host$uri/$extra");
-    exit;
-}
 
-$logout_page =<<<HTML
+
+$logout_page = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,10 +28,10 @@ $logout_page =<<<HTML
   <meta name="author" content="felixmuthui32@gmail.com">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="msapplication-tap-highlight" content="no">
-  <link href="res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
-  <link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
-  <link href="res/css/main.css" rel="stylesheet"  media="screen,projection">
-  <link href="res/vendor/fontawesome/css/all.css" rel="stylesheet"/>
+  <link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
+  <link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+  <link href="../res/css/main.css" rel="stylesheet"  media="screen,projection">
+  <link href="../res/vendor/fontawesome/css/all.css" rel="stylesheet"/>
   <title>Logout</title>
 </head>
 <body>
@@ -86,12 +75,12 @@ $logout_page =<<<HTML
       <div class="col s4"></div>
     </div>
   </div>
-<script type="text/javascript" src="res/vendor/jquery-3.4.1.js"></script>
-<script type="text/javascript" src="res/vendor/popper.min.js"></script>
-<script type="text/javascript" src="res/vendor/jquery.mobile-1.4.5.js"></script>
-<script type="text/javascript" src="res/vendor/materialize/js/materialize.js"></script>
-<script type="text/javascript" src="res/vendor/fontawesome/js/all.js"></script>
-<script type="text/javascript" src="res/js/init.js"></script> 
+<script type="text/javascript" src="../res/vendor/jquery-3.4.1.js"></script>
+<script type="text/javascript" src="../res/vendor/popper.min.js"></script>
+<script type="text/javascript" src="../res/vendor/jquery.mobile-1.4.5.js"></script>
+<script type="text/javascript" src="../res/vendor/materialize/js/materialize.js"></script>
+<script type="text/javascript" src="../res/vendor/fontawesome/js/all.js"></script>
+<script type="text/javascript" src="../res/js/init.js"></script> 
 </body>
 </html>
 HTML;

@@ -31,7 +31,7 @@ switch ($requestMethod){
         if (!empty($id)){
             echo json_encode($repository->read_app_data_by_id($id));
         }else {
-            echo json_encode($repository->read_app_data());
+            echo json_encode($repository->load_all_apps_data());
         }
 
         break;

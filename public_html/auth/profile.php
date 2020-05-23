@@ -13,28 +13,31 @@ error_reporting(E_ALL);
 ini_set('display_errors', true);
 ini_set('html_errors', true);
 
-require_once __DIR__ . '../../vendor/autoload.php';
-$repository = new Repository();
-$result =  $repository->find_user_with_id($_SESSION['login_ID']);
-$admin = $result['body']['user']['isAdmin'];
+require_once __DIR__ . '../../../vendor/autoload.php';
 
-/**
- * Redirect to the admin page if the user is admin
- */
- if ($admin == 1){
-     /* Redirect to a different page in the current directory that was requested */
-     $host = $_SERVER['HTTP_HOST'];
-     $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-     $extra = 'admin/admin.php';
-     header("Location: http://$host$uri/$extra");
-     exit;
- }
-  ?>
-<?php
- /**
-  * Display the user profile page
-  */
- if (isset($_SESSION['is_authenticated']) && $_SESSION['is_authenticated']){   ?>
+$request_method = $_SERVER['REQUEST_METHOD'];
+$repository = new Repository();
+
+switch ($request_method) {
+    case 'GET':
+        if (isset($_SESSION['login_ID'])) {
+            $result =  $repository->find_user_with_id($_SESSION['login_ID']);
+            $user = $result['body']['user'];
+        }
+
+        /**
+          * Redirect to login page
+          */
+        if (isset($_SESSION['is_authenticated']) && $_SESSION['is_authenticated'] != 1){
+            /* Redirect to a different page in the current directory that was requested */
+            $host = $_SERVER['HTTP_HOST'];
+            $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+            $extra = '../login.php';
+            header("Location: http://$host$uri/$extra");
+            exit;
+        }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,11 +48,11 @@ $admin = $result['body']['user']['isAdmin'];
  <meta name="author" content="felixmuthui32@gmail.com">
  <meta http-equiv="X-UA-Compatible" content="IE=edge">
  <meta name="msapplication-tap-highlight" content="no">
- <link href="res/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"  media="screen,projection">
- <link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
- <link href="res/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet"  media="screen,projection">
- <link href="res/css/main.css" rel="stylesheet"  media="screen,projection">
- <title>Dashboard</title>
+ <link href="../res/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"  media="screen,projection">
+ <link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+ <link href="../res/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet"  media="screen,projection">
+ <link href="../res/css/main.css" rel="stylesheet"  media="screen,projection">
+ <title>Profile</title>
  <style>
      header, main, footer {
          padding-left: 300px;
@@ -62,11 +65,10 @@ $admin = $result['body']['user']['isAdmin'];
  </style>
 </head>
 <body>
-
  <header>
      <nav class="" role="navigation" id="profileNav">
          <div class="nav-wrapper container">
-             <a href="#" data-target="nav-mobile" class="sidenav-trigger black-text"><i class="material-icons">menu</i></a>
+             <a href="#" data-target="nav-mobile" class="sidenav-trigger black-text"><i class="fas fa-bars"></i></a>
              <ul class="right hide-on-med-and-down" id="navList">
                  <li class="" id="navProfileLink">
                      <a href="#!" data-target="dropdown1" class="dropdown-trigger waves-effect">
@@ -74,19 +76,16 @@ $admin = $result['body']['user']['isAdmin'];
                  <li id="navProfileLink">
                      <a href="#!" data-target="chat-dropdown" class="dropdown-trigger waves-effect" id="navProfileLink">
                          <i class="material-icons">settings</i></a></li>
-                 <li id="">
-                     <a href="logout.php" data-target="chat-dropdown"
-                        class="dropdown-trigger waves-effect text-light text-capitalize" id="navProfileLink">Logout</a></li>
              </ul>
          </div>
      </nav>
      <ul id="nav-mobile" class="sidenav sidenav-fixed">
          <li><div class="user-view">
                  <div class="background">
-                     <img src="res/img/profile-background-design-material-image_131823.jpg" alt="account-background">
+                     <img src="../res/img/wood.jpg" alt="account-background">
                  </div>
                  <a href=""><img class="circle" src="<?php echo $result['body']['user']['url']; ?>" alt="user-avatar"></a>
-                 <a href=""><span class="text-black-50 name"><?php echo $result['body']['user']['fullName']; ?></span></a>
+                 <a href=""><span class="text-black-50 name"><?php echo $result['body']['user']['full_name']; ?></span></a>
                  <a href=""><span class=" text-black-50 email"><?php echo $result['body']['user']['email']; ?></span></a>
              </div></li>
          <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
@@ -109,15 +108,5 @@ $admin = $result['body']['user']['isAdmin'];
 <script src="res/js/init.js"></script>
 </body>
 </html>
-
-
-<?php }  else {
-     /* Redirect to a different page in the current directory that was requested */
-     $host = $_SERVER['HTTP_HOST'];
-     $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-     $extra = 'login.php';
-     header("Location: http://$host$uri/$extra");
-     exit;
- } ?>
 
  

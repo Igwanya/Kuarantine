@@ -11,6 +11,8 @@ namespace Src\api;
 use Src\Repository;
 
 require_once __DIR__ . '../../../vendor/autoload.php';
+session_start();
+
 ini_set('display_errors', true);
 ini_set('html_errors', true);
 //header("Access-Control-Allow-Origin: *");
@@ -19,10 +21,8 @@ ini_set('html_errors', true);
 //header("Content-Type: application/json; charset=UTF-8");
 //header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-$repo = new Repository();
-//print_r($repo->read_all_categories()) ;
-$result =  $repo->load_all_products()['body']['products'];
-foreach ($result as $arr) {
-    print_r($arr['url']);
-}
+//echo $_SERVER['DOCUMENT_ROOT'].'/public_html/redirects.php';
+echo $_SERVER['SERVER_NAME'];
+echo $_SERVER['HTTP_HOST'];
+
 
