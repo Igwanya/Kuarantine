@@ -39,7 +39,7 @@ require_once __DIR__ . '../../vendor/autoload.php';
                     <h5 class="header col s12 light">A modern responsive front-end framework based on Material Design</h5>
                 </div>
                 <div class="row center">
-                    <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
+                    <a href="" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
                 </div>
                 <br><br>
 
@@ -84,13 +84,6 @@ require_once __DIR__ . '../../vendor/autoload.php';
         </div>
     </div>
 </footer>
-
-
-
-
-
-
-
 <script type="text/javascript" src="res/vendor/jquery-3.4.1.js"></script>
 <script type="text/javascript" src="res/vendor/popper.min.js"></script>
 <script type="text/javascript" src="res/vendor/materialize/js/materialize.js"></script>
