@@ -110,8 +110,8 @@ if (isset($_SESSION['is_authenticated']) && $_SESSION['is_authenticated']){   ?>
         <li><a href="admin_profile.php"><i class="fas fa-user-astronaut"></i> Profile</a></li>
 
         <li><a class="subheader">Subheader</a></li>
-        <li><a class="waves-effect" href="../partials/edit-user.php">Edit</a></li>
-        <li><a class="waves-effect" href="../add_product.php">Add a product</a></li>
+        <li><a class="waves-effect" href="../auth/edit_user.php">Edit</a></li>
+        <li><a class="waves-effect" href="../products/add_product.php">Add a product</a></li>
         <li><a class="waves-effect" href="../notifications.php"><i class="fas fa-rocket"></i> Manage notifications</a></li>
         <li><a class="waves-effect" href="manage_accounts.php"><i class="fa fa-user-friends"></i> Manage accounts</a></li>
         <li><a class="waves-effect text-black-50" href="manage_articles.php"><i class="fas fa-newspaper"></i> Manage Articles</a></li>

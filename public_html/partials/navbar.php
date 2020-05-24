@@ -8,16 +8,16 @@
 
 $query = $repository->find_user_with_id($_SESSION['login_ID']);
 //print_r($query);
-$date_string =  date('l jS \of F Y h:i:s A');
+$date_string =  gmdate('l jS \of F Y h:i:s A');
 $nav = <<<NAV
 <nav>
     <div class="nav-wrapper p-2">
-        <a href="#" class="">{$date_string}</a>
+        <a href="#" class=""><i class="fas fa-clock fa-1x"></i>  {$date_string}</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-           <li><a href="../admin/admin.php"><i class="fa fa-user-astronaut"></i> {$query['body']['user']['username']}</a></li>
-            <li><a href="{$_SERVER['SERVER_NAME']}">site</a> </li>
+           <li><a href="../profile.php"><i class="fa fa-user-circle"></i>  {$query['body']['user']['username']} |</a></li>
+            <li><a href="{$_SERVER['SERVER_NAME']}">  view site |</a></li>
             <li class=""><i class="" ></i></li>
-            <li><a href="../logout.php"><i class="fa fa-power-off fa-1x"></i>log out</a></li>   
+            <li><a href="../auth/logout.php"><i class="fa fa-power-off fa-1x"></i>  log out</a></li>   
         </ul>
     </div>
 </nav>

@@ -33,44 +33,54 @@ $repository = new Repository();
     <title>Products</title>
 </head>
 <body>
-
-<div class="container">
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1 class="display-4">Fluid jumbotron</h1>
-            <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+<header>
+    <div class="container py-5">
+        <div class="jumbotron text-white jumbotron-image shadow"
+             style="background-image: url(../public_html/res/img/products_background.jpg);">
+            <h2 class="mb-4">
+                Flea market.
+            </h2>
+            <p class="mb-4">
+                Buy and sell products
+            </p>
+            <!--            <a href="https://bootstrapious.com/snippets" class="btn btn-primary">More Bootstrap Snippets</a>-->
         </div>
     </div>
-    <div class="row">
-        <div class="card-deck">
-            <?php $products = $repository->load_all_products();
-            foreach ($products as $arr) {
-                foreach ($arr as $body => $product) {
-                    foreach ($product as $content) { ?>
-                        <div class="">
-                            <div class="card" style="width: 18rem;">
-                                <img src="<?php print_r($content['url']) ?>"
-                                     class="card-img-top" alt="Product image">
-                                <div class="card-body">
-                                    <h5 class="card-title text-justify"><?php echo $content['title'] ?></h5>
-                                    <div class="card-text">
-                                        <p class="text-body"><?php echo $content['detail'] ?></p>
-                                        <div class="text-right">
-                                        <p class="text-monospace text-primary text-sm-right">
-                                            Kshs <?php echo $content['price'] ?></p>
+</header>
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="card-deck">
+                <?php $products = $repository->load_all_products();
+                foreach ($products as $arr) {
+                    foreach ($arr as $body => $product) {
+                        foreach ($product as $content) { ?>
+                            <div class="">
+                                <div class="card" style="width: 18rem;">
+                                    <img src="<?php print_r($content['url']) ?>"
+                                         class="card-img-top" alt="Product image">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-justify"><?php echo $content['title'] ?></h5>
+                                        <div class="card-text">
+                                            <p class="text-body"><?php echo $content['detail'] ?></p>
+                                            <div class="text-right">
+                                                <p class="text-monospace text-primary text-sm-right">
+                                                    Kshs <?php echo $content['price'] ?></p>
+                                            </div>
+                                            <p class="text-light text-right"><?php echo $content['last_updated'] ?>rtr</p>
                                         </div>
-                                        <p class="text-light text-right"><?php echo $content['last_updated'] ?>rtr</p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php     }
-                }
-            } ?>
+                        <?php     }
+                    }
+                } ?>
 
+            </div>
         </div>
     </div>
-</div>
+</main>
+
 <script type="text/javascript" src="res/vendor/jquery-3.4.1.js"></script>
 <script type="text/javascript" src="res/vendor/popper.min.js"></script>
 <script type="text/javascript" src="res/vendor/jquery.mobile-1.4.5.js"></script>

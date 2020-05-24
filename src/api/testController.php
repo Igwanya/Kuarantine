@@ -8,9 +8,11 @@
 
 namespace Src\api;
 
+use Src\models\User;
 use Src\Repository;
 
 require_once __DIR__ . '../../../vendor/autoload.php';
+include_once "../../public_html/utils.php";
 session_start();
 
 ini_set('display_errors', true);
@@ -21,8 +23,22 @@ ini_set('html_errors', true);
 //header("Content-Type: application/json; charset=UTF-8");
 //header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-//echo $_SERVER['DOCUMENT_ROOT'].'/public_html/redirects.php';
-echo $_SERVER['SERVER_NAME'];
-echo $_SERVER['HTTP_HOST'];
+$repository = new Repository();
+print_r($_SESSION);
+//$result =  $repository->find_user_with_id(34);
+//$user = $result['body']['user'];
+////print_r($user);
+//$username ="maxwell";
+//$path = $user['url'];
+//$arr  = preg_split("#/#", $path);
+//print_r($arr);
+//echo  $arr[0].'/'.$username.'/'.$arr[2];
+
+// \Src\delete_all_session_variables();
+
+//$upload_dir  = $_SERVER["DOCUMENT_ROOT"]."/public_html/uploads/";
+//delete_directory($upload_dir."/todeleteretro");
+
+
 
 

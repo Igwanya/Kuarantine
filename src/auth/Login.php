@@ -121,8 +121,12 @@ class Login{
             $this->login_frm_inputs['created']      = $row['created'];
             $this->login_frm_inputs['last_updated'] = $row['lastUpdated'];
             $this->login_frm_inputs['password']     = $row['passwordHash'];
-            $_SESSION['is_admin']                   = $row['isAdmin'];
-            $_SESSION["login_ID"]                    =  $row['id'];
+            if (!isset($_SESSION['is_admin']) || isset($_SESSION['is_admin']) ) {
+                $_SESSION['is_admin']                   = $row['isAdmin'];
+            }
+            if (!isset($_SESSION['login_ID']) || isset($_SESSION['login_ID']) ) {
+                $_SESSION["login_ID"]                    =  $row['id'];
+            }
             $this->login_frm_inputs_errors['credentials_error'] = "";
         } else {
             $this->login_frm_inputs_errors['credentials_error'] = 'Email address does not exist';
@@ -159,8 +163,12 @@ class Login{
             $this->login_frm_inputs['created']      = $row['created'];
             $this->login_frm_inputs['last_updated'] = $row['lastUpdated'];
             $this->login_frm_inputs['password']     = $row['passwordHash'];
-            $_SESSION['is_admin']                   = $row['isAdmin'];
-            $_SESSION["login_ID"]                    =  $row['id'];
+            if (!isset($_SESSION['is_admin']) || isset($_SESSION['is_admin']) ) {
+                $_SESSION['is_admin']                   = $row['isAdmin'];
+            }
+            if (!isset($_SESSION['login_ID']) || isset($_SESSION['login_ID']) ) {
+                $_SESSION["login_ID"]                    =  $row['id'];
+            }
             $this->login_frm_inputs_errors['credentials_error'] = "";
         } else {
             $this->login_frm_inputs_errors['credentials_error'] = 'No user with that username exists. ';
@@ -199,18 +207,15 @@ class Login{
 
     /**
      * Set the session var
-     * @return bool
+     *
      */
     public function authenticate(){
-        $result = false;
         if (empty($this->perform_username_or_email_check()) &&
             empty($this->perform_password_check()) ) {
-            if (!isset($_SESSION['is_authenticated'])) {
+            if (!isset($_SESSION['is_authenticated']) || isset($_SESSION['is_authenticated']) ) {
                 $_SESSION['is_authenticated'] = true;
-                $result = true;
             }
         }
-        return $result;
     }
 
     /**

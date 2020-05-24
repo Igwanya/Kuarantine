@@ -14,10 +14,23 @@ ini_set('display_errors', true);
 ini_set('html_errors', true);
 
 require_once __DIR__ . '../../../vendor/autoload.php';
+include_once "../utils.php";
 
+$requestmethod = $_SERVER['REQUEST_METHOD'];
+switch ($requestmethod) {
+    case 'GET':
+        break;
+    case 'POST':
+        if ($_SESSION['is_authenticated'] == 1) {
+            delete_all_session_variables();
+            header("Location: http://" .$_SERVER['SERVER_NAME']);
+        }
+        else {
+            header("Location: http://" .$_SERVER['SERVER_NAME']);
+        }
 
-
-$logout_page = <<<HTML
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,8 +79,8 @@ $logout_page = <<<HTML
                 </div>
                 </div>
                 <div id="loginFormRedirect">
-                    <a href="password_reset.html" id="loginFormPasswordReset" class="left left-align">Forgot password ?</a>
-                    <a href="register.html" id="loginFormRegister" class="right right-align">Create an account.</a>
+                    <a href="../auth/password_reset.php" id="loginFormPasswordReset" class="left left-align">Forgot password ?</a>
+                    <a href="../auth/register.php" id="loginFormRegister" class="right right-align">Create an account.</a>
                 </div>
             </fieldset>   
         </form>
@@ -83,15 +96,4 @@ $logout_page = <<<HTML
 <script type="text/javascript" src="../res/js/init.js"></script> 
 </body>
 </html>
-HTML;
 
-if ($_SESSION['is_authenticated'] == 1)
-{
-    $_SESSION['is_authenticated'] = false;
-    unset($_SESSION['is_admin']);
-    unset($_SESSION['login_ID']);
-    echo $logout_page;
-}
-else {
-    header("Location: http://" .$_SERVER['SERVER_NAME']);
-}

@@ -50,11 +50,10 @@ if ($request_method == 'POST')
         $login->setPassword($login_frm_password);
         $username_or_email_error = $login->perform_username_or_email_check();
         $password_error = $login->perform_password_check();
-        header("Location: profile.php");
-//        header("Location: http://".$_SERVER['HTTP_HOST']."/public_html/auth/profile.php");
-//        if ($login->authenticate() == 1){
-//           redirect_to_profile_page();
-//        }
+        if (empty($username_or_email_error) && empty($password_error)){
+            $login->authenticate();
+            header("Location: profile.php");
+        }
     }
 }
 ?>

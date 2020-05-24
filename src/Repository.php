@@ -288,34 +288,106 @@ class Repository
         return $result;
     }
 
+    /**
+     * @param $id
+     * @param $url
+     * @param $username
+     * @param $email
+     * @param $firstName
+     * @param $lastName
+     * @param $fullName
+     * @return array
+     */
     public function update_user_to_db($id, $url, $username, $email, $firstName,
-                                      $lastName, $fullName, $isAdmin, $passwordHash, $lastUpdated)
+                                      $lastName, $fullName)
     {
         $result = array(
             "status"  => "",
             "body"    => array(),
-            "error"   => ""
+            "error"   => array()
         );
         $sql = "UPDATE users SET url=?, username=?, email=?, firstName=?, lastName=?, 
-                fullName=?, isAdmin=?, passwordHash=?, lastUpdated=?  WHERE id=?";
-        $lastUpdated = date("Y-m-d");
+                fullName=?, lastUpdated=NOW()  WHERE id=?";
+//        $lastUpdated = gmdate("n/j/Y g:i:s A"); // today's date
         /* Prepared statement, stage 1: prepare */
         if (!$stmt = $this->db->prepare($sql)){
             trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
         }
-        if (!$stmt->bind_param("sssssssssi",$url,$username,  $email, $firstName, $lastName,
-            $fullName, $isAdmin, $passwordHash, $lastUpdated, $id)){
+        if (!$stmt->bind_param("ssssssi",$url,$username,  $email, $firstName, $lastName,
+            $fullName, $id)){
             trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
             }
         /* Prepared statement, stage 2: bind and execute */
         if (!$stmt->execute()) {
-            $result["body"] = null;
             $result["error"] =  $stmt->error;
             trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
         } else{
             $result["status"] = "Update successful";
-            $result["body"] = null;
-            $result["error"] =  null;
+        }
+        return $result;
+    }
+
+    /**
+     * @param $id
+     * @param $password
+     * @return array
+     */
+    public function update_user_password($id, $password)
+    {
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => array()
+        );
+        $current_user = $this->find_user_with_id($id)['body']['user'];
+        $sql = "UPDATE users SET passwordHash=?, lastUpdated=NOW()  WHERE id=?";
+//        $lastUpdated = gmdate("n/j/Y g:i:s A"); // today's date
+        /* Prepared statement, stage 1: prepare */
+        if (!$stmt = $this->db->prepare($sql)){
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
+        }
+        if (!$stmt->bind_param("si",$password, $id)){
+            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        /* Prepared statement, stage 2: bind and execute */
+        if (!$stmt->execute()) {
+            $result["error"] =  $stmt->error;
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        } else{
+            $result["status"] = "Update password successful";
+        }
+        return $result;
+    }
+
+    /**
+     * @param $id
+     * @param $admin
+     * @return array
+     */
+    public function update_user_admin_status($id, $admin)
+    {
+        $result = array(
+            "status"  => "",
+            "body"    => array(),
+            "error"   => array()
+        );
+        $current_user = $this->find_user_with_id($id)['body']['user'];
+
+        $sql = "UPDATE users SET isAdmin=?, lastUpdated=NOW()  WHERE id=?";
+//        $lastUpdated = gmdate("n/j/Y g:i:s A"); // today's date
+        /* Prepared statement, stage 1: prepare */
+        if (!$stmt = $this->db->prepare($sql)){
+            trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
+        }
+        if (!$stmt->bind_param("si",$admin, $id)){
+            trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
+        }
+        /* Prepared statement, stage 2: bind and execute */
+        if (!$stmt->execute()) {
+            $result["error"] =  $stmt->error;
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+        } else{
+            $result["status"] = "Update admin status successful";
         }
         return $result;
     }
@@ -329,7 +401,7 @@ class Repository
         $result = array(
             "status"  => "",
             "body"    => array(),
-            "error"   => ""
+            "error"   => array()
         );
         /* Prepared statement, stage 1: prepare */
         if (!($stmt = $this->db->prepare("DELETE FROM users WHERE id LIKE ?"))) {
@@ -340,14 +412,10 @@ class Repository
             trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
         }
         if (!$stmt->execute()) {
-            $result["status"] = null;
-            $result["body"]   = null;
             $result["error"]  = $stmt->error;
             trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
         } else {
             $result["status"] = "Deleted successful";
-            $result["body"]   = null;
-            $result["error"] = null;
         }
         return $result;
     }

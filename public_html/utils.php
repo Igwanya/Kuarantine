@@ -9,4 +9,30 @@ namespace Src;
 
 require_once __DIR__ . '../../vendor/autoload.php';
 
-include $_SERVER['DOCUMENT_ROOT'] . '/public_html/redirects.php';
+
+function delete_directory($dir_name) {
+    if (is_dir($dir_name)) {
+        $dir_handle = opendir($dir_name);
+        if (!$dir_handle)
+            return false;
+        while ($file = readdir($dir_handle)) {
+            if ($file != "." && $file != "..") {
+                if (!is_dir($dir_name."/".$file)) {
+                    unlink($dir_name."/".$file);
+                } else {
+                    delete_directory($dir_name."/".$file);
+                }
+            }
+        }
+        closedir($dir_handle);
+        rmdir($dir_name);
+    }
+
+    return true;
+}
+
+function delete_all_session_variables(){
+    unset($_SESSION['is_authenticated']);
+    unset($_SESSION['is_admin']);
+    unset($_SESSION['login_ID']);
+}

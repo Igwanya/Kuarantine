@@ -46,7 +46,7 @@ require_once __DIR__ . '../../vendor/autoload.php';
         <div class="row" >
             <div class="col-md-3"></div>
             <div class="col-md-7 mt-5">
-                <form enctype="multipart/form-data" method="POST" action="add_product.php">
+                <form enctype="multipart/form-data" method="POST" action="products/add_product.php">
                     <fieldset>
                         <legend>Add a notification</legend>
                         <div class="file-field input-field" id="inputPhoto">

@@ -110,7 +110,7 @@ if (!empty($reset_password)){
 }
 
 // TODO:: Customise the page
-$link_expired_page =<<<HTML
+$link_expired_page = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -121,9 +121,9 @@ $link_expired_page =<<<HTML
 	<meta name="author" content="felixmuthui32@gmail.com">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no">
-	<link href="res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
-	<link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
-	<link href="res/css/main.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/css/main.css" rel="stylesheet"  media="screen,projection">
     <title>Change Password</title>
 </head>
 <body>
@@ -146,7 +146,7 @@ $link_expired_page =<<<HTML
 </html>
 HTML;
 
-$change_password_page =<<<HRML
+$change_password_page = <<<HRML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -157,9 +157,9 @@ $change_password_page =<<<HRML
 	<meta name="author" content="felixmuthui32@gmail.com">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no">
-	<link href="res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
-	<link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
-	<link href="res/css/main.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/css/main.css" rel="stylesheet"  media="screen,projection">
     <title>Change Password</title>
 </head>
 <body>
@@ -200,7 +200,7 @@ $change_password_page =<<<HRML
 HRML;
 
 // TODO:: Customise the page
-$change_password_page_success_page =<<<HTML
+$change_password_page_success_page = <<<HTML
  <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -211,9 +211,9 @@ $change_password_page_success_page =<<<HTML
 	<meta name="author" content="felixmuthui32@gmail.com">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no">
-	<link href="res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
-	<link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
-	<link href="res/css/main.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/css/main.css" rel="stylesheet"  media="screen,projection">
     <title>Change Password</title>
 </head>
 <body>
@@ -237,7 +237,7 @@ $change_password_page_success_page =<<<HTML
 HTML;
 
 // TODO:: Customise the page 
-$invalid_link_expired_page =<<<HTML
+$invalid_link_expired_page = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -248,9 +248,9 @@ $invalid_link_expired_page =<<<HTML
 	<meta name="author" content="felixmuthui32@gmail.com">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no">
-	<link href="res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
-	<link href="res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
-	<link href="res/css/main.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+	<link href="../res/css/main.css" rel="stylesheet"  media="screen,projection">
     <title>Invalid Link</title>
 </head>
 <body>

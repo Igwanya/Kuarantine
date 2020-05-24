@@ -33,12 +33,12 @@ switch ($request_method) {
     <meta name="author" content="felixmuthui32@gmail.com">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
-    <link href="res/vendor/materialize/css/materialize.css" rel="stylesheet" media="screen,projection">
+    <link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet" media="screen,projection">
     <!-- reference your copy Font Awesome here (from our CDN or by hosting yourself) -->
-    <link href="res/vendor/fontawesome/css/fontawesome.css" rel="stylesheet">
-    <link href="res/vendor/fontawesome/css/brands.css" rel="stylesheet">
-    <link href="res/vendor/fontawesome/css/solid.css" rel="stylesheet">
-    <link href="res/css/main.css" rel="stylesheet" media="screen,projection">
+    <link href="../res/vendor/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="../res/vendor/fontawesome/css/brands.css" rel="stylesheet">
+    <link href="../res/vendor/fontawesome/css/solid.css" rel="stylesheet">
+    <link href="../res/css/main.css" rel="stylesheet" media="screen,projection">
     <title>Detail Articles</title>
 </head>
 <body>
@@ -73,12 +73,12 @@ switch ($request_method) {
 
 
 <!--  Scripts-->
-<script src="res/vendor/jquery-3.4.1.js"></script>
-<script src="res/vendor/popper.min.js"></script>
-<script src="res/vendor/materialize/js/materialize.js"></script>
-<script src="res/vendor/jquery.mobile-1.4.5.js"></script>
-<script src="res/vendor/fontawesome/js/fontawesome.min.js"></script>
-<script src="res/js/init.js"></script>
+<script src="../res/vendor/jquery-3.4.1.js"></script>
+<script src="../res/vendor/popper.min.js"></script>
+<script src="../res/vendor/materialize/js/materialize.js"></script>
+<script src="../res/vendor/jquery.mobile-1.4.5.js"></script>
+<script src="../res/vendor/fontawesome/js/fontawesome.min.js"></script>
+<script src="../res/js/init.js"></script>
 </body>
 </html>
 

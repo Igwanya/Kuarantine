@@ -219,19 +219,6 @@ class Register{
     }
 
     /**
-     * Handle the form and log in the user
-     */
-    public function redirect_to_profile_page()
-    {
-        /* Redirect to a different page in the current directory that was requested */
-        $host = $_SERVER['HTTP_HOST'];
-        $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-        $extra = 'profile.php';
-        header("Location: http://$host$uri/$extra");
-        exit;
-    }
-
-    /**
      * Register the user and log them in
      */
     public function register_user(){
@@ -250,16 +237,14 @@ class Register{
         if (empty($result['error'])){
             $user = $repo->find_user_with_email($this->m_email)['body']['user'];
             if (!isset($_SESSION['is_authenticated'])
-                || isset($_SESSION['is_authenticated']) ||
-                !isset($_SESSION['login_ID']) || isset($_SESSION['login_ID'])){
-                $_SESSION['is_authenticated']  = true;
-                $_SESSION['login_ID']  = $user['id'];
-                $this->redirect_to_profile_page();
+                || isset($_SESSION['is_authenticated']) ){
+                $_SESSION['is_authenticated']  = 1;
             }
+            if ( !isset($_SESSION['login_ID']) || isset($_SESSION['login_ID']))  {
+                $_SESSION['login_ID']  = $user['id'];
+            }
+            header("Location: ../login.php");
         }
 
     }
-
-
-
 }

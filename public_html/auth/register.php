@@ -11,7 +11,6 @@ use Src\auth\Register;
 use Src\models\User;
 
 require_once __DIR__ . '../../../vendor/autoload.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/public_html/redirects.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', true);
@@ -59,7 +58,8 @@ switch ($request_method) {
                                 $files = scandir($uploaddir.$username);
                                 $url =  $uploaddir.$username.'/'.$files[2];
                                 $var = preg_split("#/#", $url);
-                                $result_path = $var[3].'/'.$var[4].'/'.$var[5].'/'.$var[6];
+//                                $result_path = $var[3].'/'.$var[4].'/'.$var[5].'/'.$var[6];
+                                $result_path = $var[4].'/'.$var[5].'/'.$var[6];
                                 $register->setUrl($result_path);
                                 $register->register_user();
                             } else {

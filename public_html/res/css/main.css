@@ -405,6 +405,12 @@ form#registerForm input#inputTermsAndConditions
 */
 nav#profileNav li#navProfileLink {
     color: black;
-
 }
+
+.jumbotron-image {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 

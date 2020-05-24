@@ -28,13 +28,23 @@ $repository = new Repository();
     <title>Articles</title>
 </head>
 <body>
-<div class="container">
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1 class="display-4">Fluid jumbotron</h1>
-            <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+<header>
+    <div class="container py-5">
+        <div class="jumbotron text-white jumbotron-image shadow"
+             style="background-image: url(../public_html/res/img/article_background.png);">
+            <h2 class="mb-4">
+                Share your stories .
+            </h2>
+            <p class="mb-4">
+                All over the country people are following the quarantine measures set by the health officials, share your
+                experience and also read other people stories.
+            </p>
+<!--            <a href="https://bootstrapious.com/snippets" class="btn btn-primary">More Bootstrap Snippets</a>-->
         </div>
     </div>
+
+</header>
+<div class="container">
     <div class="row">
         <div class="card-deck">
             <?php $articles = $repository->read_all_posts()['body']['articles'];
@@ -58,7 +68,6 @@ $repository = new Repository();
                             </div>
                         </div>
                     <?php    } ?>
-
         </div>
     </div>
 </div>

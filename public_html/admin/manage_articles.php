@@ -88,7 +88,7 @@ switch ($request_method) {
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <a class="dropdown-item" href="#"></a>
                                         <a class="dropdown-item" href="#"></a>
-                                        <a class="dropdown-item" style="color: #00fffd" href="../detail_article.php?ID=<?php echo $arr['id'] ?>">DETAIL</a>
+                                        <a class="dropdown-item" style="color: #00fffd" href="../articles/detail_article.php?ID=<?php echo $arr['id'] ?>">DETAIL</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item " style="color:red;" href="delete_article.php?ID=<?php echo $arr['id'] ?>">DELETE</a>
                                     </div>
