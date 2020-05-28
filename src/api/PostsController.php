@@ -44,7 +44,7 @@ switch ($requestMethod)
         {
             $post_id = filter_var($post_id, FILTER_VALIDATE_INT);
 //            TODO:: read posts by author
-            echo json_encode($repository->read_post($post_id));
+            echo json_encode($repository->read_post_by_id($post_id));
         } else {
             echo json_encode($repository->read_all_posts());
         }

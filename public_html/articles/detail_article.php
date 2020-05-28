@@ -7,20 +7,30 @@
  */
 namespace Src;
 
-require_once __DIR__ . '../../vendor/autoload.php';
+require_once __DIR__ . '../../../vendor/autoload.php';
 
 session_start();
 $repository = new Repository();
 $request_method = $_SERVER['REQUEST_METHOD'];
-$result = array();
+$articles = array();
 $article = array();
+$user     = array();
 switch ($request_method) {
     case 'GET':
-        $id = filter_input(INPUT_GET, "ID");
-        $result = $repository->read_post($id);
-        $article = $result['body']['article'];
+        if (isset($_SESSION['login_ID'])){
+            $user = $repository->find_user_with_id($_SESSION['login_ID'])['body']['user'];
+            $articles = $repository->read_post_for_user($user['id'])['body']['articles'];
+            $article = $repository->read_post_by_user_id($user['id'])['body']['article'];
+        }
+        if (empty($articles)) {
+            $articles = $repository->read_post_for_user($user['id'])['body']['articles'];
+            $article = $repository->read_post_by_user_id($user['id'])['body']['article'];
+        }
+        if ($user['is_admin'] == 1) {
+            $articles = $repository->read_all_posts()['body']['articles'];
+            $article = $repository->read_post_by_user_id($user['id'])['body']['article'];
+        }
 
-        
 }
 ?>
 <!DOCTYPE html>
@@ -34,43 +44,141 @@ switch ($request_method) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
     <link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet" media="screen,projection">
+    <link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
     <!-- reference your copy Font Awesome here (from our CDN or by hosting yourself) -->
     <link href="../res/vendor/fontawesome/css/fontawesome.css" rel="stylesheet">
     <link href="../res/vendor/fontawesome/css/brands.css" rel="stylesheet">
     <link href="../res/vendor/fontawesome/css/solid.css" rel="stylesheet">
     <link href="../res/css/main.css" rel="stylesheet" media="screen,projection">
-    <title>Detail Articles</title>
+    <title>Detail Article</title>
+    <style type="text/css">
+        .fa-trash-alt {
+            color: red;
+        }
+        .fa-edit {
+          
+        }
+        .fa-check-circle {
+            color: #0D47A1;
+        }
+    </style>
+    <script type="text/javascript">
+        $('.dropdown-trigger').dropdown();
+    </script>
 </head>
 <body>
-<div class="container">
-    <header></header>
-    <main>
-        <div class="row">
-            <div class="col s12 m6">
-                <div class="card">
-                    <div class="card-image">
-                        <img src="<?php echo $article['url']; ?>">
-                        <span class="card-title"><?php echo $article['headline']; ?></span>
-                        <a class="btn-floating halfway-fab waves-effect waves-light red"
-                           href="edit_article.php?ID=<?php echo $article['id']; ?>"><i class="material-icons">edit</i></a>
+<?php include "../partials/navbar.php"; ?>
+<?php if (!empty($articles)) { ?>
+<section>
+    <div class="container">
+        <div class="card mb-3" style="max-width: 840px; max-height: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="../<?php echo $article['url']; ?>"
+                             class="card-img" alt="Article image">
                     </div>
-                    <div class="card-content">
-                        <p><?php echo $article['content']; ?></p>
-                        <div>
-                            <p class="teal-text grey-text">Posted by
-                                <?php echo $repository->find_user_with_id($article['user_id'])['body']['user']['username']; ?>  at <?php echo $article['created'] ?></p>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <div class="card-header">
+                                <img src="../<?php echo $user['url']; ?>" class="circle float-left"
+                                     style="width: 3rem; height: 3rem;" />
+                                <p class="card-text text-sm-right grey-text"><?php echo $user['username']; ?>
+                                    <i class="fa fa-check-circle fa-1x" ></i> Verified<br/>
+                                    Updated  <?php echo $article['last_updated']; ?>
+                                </p>
+                            </div>
+                            <div class="card-title py-2">
+                                <h5 class="h5 left"><?php echo $article['headline']; ?></h5>
+                                <!-- Dropdown Trigger -->
+                                <a class='dropdown-trigger right'
+                                   href='#' data-target='dropdown1'><i class="fas fa-ellipsis-v fa-1x"></i></a>
+                                <!-- Dropdown Structure -->
+                                <ul id='dropdown1' class='dropdown-content'>
+                                    <li><a href="edit_article.php?ID=<?php echo $article['id']; ?>"><i class="fas fa-edit fa-1x"></i>Edit</a></li>
+                                    <li><a href="delete_article.php?ID=<?php echo $article['id']; ?>"><i class="fa fa-trash-alt fa-1x"></i>Delete</a></li>
+                                </ul>
+                            </div>
+
+                            <p class="card-content"><?php echo $article['content']; ?></p>
                         </div>
                     </div>
-
                 </div>
             </div>
+        <?php foreach ($articles as $content) { ?>
+            <div class="card mb-3" style="max-width: 840px; max-height: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="../<?php echo $content['url']; ?>"
+                             class="card-img" alt="Article image">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <div class="card-header">
+                                <img src="../<?php echo $user['url']; ?>" class="circle float-left"
+                                     style="width: 3rem; height: 3rem;" />
+                                <p class="card-text text-sm-right grey-text"><?php echo $user['username']; ?>
+                                    <i class="fa fa-check-circle fa-1x" ></i> Verified<br/>
+                                    Updated  <?php echo $content['last_updated']; ?>
+                                </p>
+                            </div>
+                            <div class="card-title py-2">
+                                <h5 class="h5 left"><?php echo $content['headline']; ?></h5>
+                                <!-- Dropdown Trigger -->
+                                <a class='dropdown-trigger right'
+                                   href='#' data-target='dropdown1'><i class="fas fa-ellipsis-v fa-1x"></i></a>
+                            </div>
+                            <!-- Dropdown Structure -->
+                            <ul id='dropdown1' class='dropdown-content'>
+                                <li><a href="edit_article.php?ID=<?php echo $content['id']; ?>"><i class="fas fa-edit fa-1x"></i>Edit</a></li>
+                                <li><a href="delete_article.php?ID=<?php echo $content['id']; ?>"><i class="fa fa-trash-alt fa-1x"></i>Delete</a></li>
+                            </ul>
+                            <p class="card-content"><?php echo $content['content']; ?></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php    } ?>
+    </div>
+</section>
+<?php } ?>
+<?php if (empty($articles) && !empty($article) ) { ?>
+    <section>
+        <div class="container">
+                <div class="card mb-3" style="max-width: 840px; max-height: 540px;">
+                    <div class="row no-gutters">
+                        <div class="col-md-4">
+                            <img src="../<?php echo $article['url']; ?>"
+                                 class="card-img" alt="Article image">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <div class="card-header">
+                                    <img src="../<?php echo $user['url']; ?>" class="circle float-left"
+                                         style="width: 3rem; height: 3rem;" />
+                                    <p class="card-text text-sm-right grey-text"><?php echo $user['username']; ?>
+                                        <i class="fa fa-check-circle fa-1x" ></i> Verified<br/>
+                                        Updated  <?php echo $article['last_updated']; ?>
+                                    </p>
+                                </div>
+                                <div class="card-title py-2">
+                                    <h5 class="h5 left"><?php echo $article['headline']; ?></h5>
+                                    <!-- Dropdown Trigger -->
+                                    <a class='dropdown-trigger right'
+                                       href='#' data-target='dropdown1'><i class="fas fa-ellipsis-v fa-1x"></i></a>
+                                </div>
+                                <!-- Dropdown Structure -->
+                                <ul id='dropdown1' class='dropdown-content'>
+                                    <li><a href="edit_article.php?ID=<?php echo $article['id']; ?>"><i class="fas fa-edit fa-1x"></i>Edit</a></li>
+                                    <li><a href="delete_article.php?ID=<?php echo $article['id']; ?>"><i class="fa fa-trash-alt fa-1x"></i>Delete</a></li>
+                                </ul>
+                                <p class="card-content"><?php echo $article['content']; ?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
-
-    </main>
-     <?php include '../public_html/partials/footer.php'; ?>
-</div>
-
-
+    </section>
+<?php } ?>
 
 <!--  Scripts-->
 <script src="../res/vendor/jquery-3.4.1.js"></script>

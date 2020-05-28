@@ -24,7 +24,7 @@ ini_set('html_errors', true);
 //header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 $repository = new Repository();
-print_r($_SESSION);
+//print_r($_SESSION);
 //$result =  $repository->find_user_with_id(34);
 //$user = $result['body']['user'];
 ////print_r($user);
@@ -39,6 +39,11 @@ print_r($_SESSION);
 //$upload_dir  = $_SERVER["DOCUMENT_ROOT"]."/public_html/uploads/";
 //delete_directory($upload_dir."/todeleteretro");
 
+
+$article = $repository->read_post_by_id(5);
+//print_r($article);
+$path = preg_split("#/#", $article['body']['article']['url']);
+print_r($path[3]);
 
 
 

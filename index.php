@@ -12,6 +12,16 @@ require_once __DIR__ . '../vendor/autoload.php';
 
 session_start();
 
+$request_method = $_SERVER["REQUEST_METHOD"];
+$repository = new Repository();
+$user = array();
+switch ($request_method) {
+    case 'GET':
+        if (isset($_SESSION['login_ID'])) {
+            $user = $repository->find_user_with_id($_SESSION['login_ID'])['body']['user'];
+
+}
+
 setcookie("MyCookie[foo]", 'Testing 1', time()+3600);
 setcookie("MyCookie[bar]", 'Testing 2', time()+3600);
 if (isset($_COOKIE['count'])) {
@@ -23,10 +33,7 @@ setcookie('count', $count, time()+3600);
 $host  = $_SERVER['HTTP_HOST'];
 $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
 //$_SERVER["is_authenticated"] = true;
-$repository = new Repository();
-$user = array();
-if (isset($_SESSION['login_ID'])) {
-    $user = $repository->find_user_with_id($_SESSION['login_ID'])['body']['user'];
+
 }
 
 ?>

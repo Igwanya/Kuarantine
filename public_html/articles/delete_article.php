@@ -14,12 +14,14 @@ $repository = new Repository();
 $request_method = $_SERVER['REQUEST_METHOD'];
 switch ($request_method) {
     case 'GET':
-        include '../partials/navbar.php';
         $id = filter_input(INPUT_GET, "ID");
+        $upload_dir = $_SERVER['DOCUMENT_ROOT'].'/public_html/res/assets/blog/';
+        $result = $repository->read_post_by_id($id);
+        $article = $result['body']['article'];
+        $path = preg_split("#/#", $article['url']);
+        unlink($upload_dir.$path[3]);
         $result = $repository->delete_post($id);
-        if (empty($result['error'])) {
-            echo $result['status'];
-        }
+        header("Location: ../profile.php");
         break;
 
 

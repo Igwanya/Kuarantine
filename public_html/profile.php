@@ -104,10 +104,14 @@ switch ($request_method) {
                  <a href=""><span class="name"><?php echo $user['full_name']; ?></span></a>
                  <a href=""><span class="email"><?php echo $user['email']; ?></span></a>
              </div></li>
-         <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
+<!--         <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>-->
          <li><a href="#!">Second Link</a></li>
-         <li><a class="subheader">Subheader</a></li>
-         <li><a class="waves-effect" href="auth/edit_user.php"><i class="fa fa-user-edit fa-1x"></i> Edit</a></li>
+         <li><a class="subheader">Account</a></li>
+         <li><a class="waves-effect" href="auth/edit_user.php"><i class="fa fa-user-edit fa-1x"></i> Edit profile</a></li>
+         <li><a class="subheader">Articles</a></li>
+         <li><a class="waves-effect" href="articles/add_article.php"><i class="fa fa-newspaper fa-1x"></i> Add an article</a></li>
+         <li><a class="waves-effect" href="articles/detail_article.php"><i class="fa fa-edit fa-1x"></i> Manage articles</a></li>
+         <li><a class="subheader">Market</a></li>
          <li><div class="divider"></div></li>
          <li><a href="auth/logout.php" class=""><i class="fas fa-power-off fa-1x"></i> log out</a> </li
      </ul>

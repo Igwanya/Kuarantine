@@ -461,7 +461,7 @@ class Repository
      * @param $articleID
      * @return array
      */
-    public function read_post($articleID){
+    public function read_post_by_id($articleID){
         $result = array(
             "status"   => "" ,
             "body"  => array(
@@ -508,6 +508,106 @@ class Repository
         return $result;
     }
 
+    public function read_post_by_user_id($user_id){
+        $result = array(
+            "status"   => "" ,
+            "body"  => array(
+                "article"  => array()
+            ),
+            "error"    => array()
+        );
+
+        $sql =  "SELECT * FROM articles WHERE userID LIKE ?";
+        $stmt = $this->db->prepare($sql);
+        $articleID = filter_var($user_id, FILTER_VALIDATE_INT);
+        /* Prepared statement, stage 2: bind and execute */
+        if (!$stmt->bind_param("i",$user_id)) {
+            trigger_error("Binding parameters failed: ("
+                . $stmt->errno . ") " . $stmt->error);
+            $result['error'] =  $stmt->error;
+        }
+        if (!$stmt->execute()) {
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+            $result['status']  = "Article read unsuccessful";
+            $result["error"] = $stmt->error;
+        } else {
+            $res = $stmt->get_result();
+            $row = $res->fetch_assoc();
+            if ($row['id'] != null){
+                $result['body']['article'] = array(
+                    'id'           => $row['id'],
+                    'url'          => $row['url'],
+                    'headline'     => $row['headline'],
+                    'content'      => html_entity_decode($row['content']),
+                    'user_id'       => $row['userID'],
+                    'created'      => $row['created'],
+                    'last_updated' => $row['lastUpdated']
+                );
+                $result['status']  = "Article read successfully";
+                return $result;
+            } else {
+                $result["error"] = "No Article found";
+            }
+        }
+        return $result;
+    }
+
+
+    /**
+     * @param $userID
+     * @return array
+     */
+    public function read_post_for_user($userID){
+        $result = array(
+            "status"   => "" ,
+            "body"  => array(
+                "articles"  => array(),
+                "count"   => 0,
+            ),
+            "error"    => array()
+        );
+
+        $sql =  "SELECT * FROM articles WHERE userID LIKE ?";
+        $stmt = $this->db->prepare($sql);
+        $articleID = filter_var($userID, FILTER_VALIDATE_INT);
+        /* Prepared statement, stage 2: bind and execute */
+        if (!$stmt->bind_param("i",$userID)) {
+            trigger_error("Binding parameters failed: ("
+                . $stmt->errno . ") " . $stmt->error);
+            $result['error'] =  $stmt->error;
+        }
+        if (!$stmt->execute()) {
+            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+            $result['status']  = "Article read unsuccessful";
+            $result["error"] = $stmt->error;
+        } else {
+            $res = $stmt->get_result();
+            $row = $res->fetch_assoc();
+            if ($res->num_rows > 0){
+            $result["status"] = $res->num_rows." articles found";
+            $result['body']['count'] =  $res->num_rows;
+            while($row = $res->fetch_assoc()){
+                $article = array(
+                    'id'            => $row['id'],
+                    'url'           => $row['url'],
+                    'headline'      => $row['headline'],
+                    'content'       => html_entity_decode($row['content']),
+                    'user_id'       => $row['userID'],
+                    'created'       => $row['created'],
+                    'last_updated'  => $row['lastUpdated']
+                );
+                array_push($result["body"]["articles"], $article);
+            }
+        }  else {
+                $result['body'] = null;
+                $result['status'] = "No users signed up. ";
+            }
+        }
+        return $result;
+    }
+
+
+
     /**
      * Read all the posts in the database
      * @return array
@@ -535,7 +635,7 @@ class Repository
                      'url'         => $row['url'],
                      'headline'    => $row['headline'],
                      'content'     => html_entity_decode($row['content']),
-                     'userID'      => $row['userID'],
+                     'user_id'      => $row['userID'],
                      'created'     => $row['created'],
                      'last_updated' => $row['lastUpdated']
                  ];
@@ -581,7 +681,7 @@ class Repository
            return $result;
        } else{
            $result["status"] = "Article updated successfully.";
-           $result["body"]   = $this->read_post($articleID)['body'];
+           $result["body"]   = $this->read_post_by_id($articleID)['body'];
            $result["error"]   = null;
        }
        return $result;

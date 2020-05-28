@@ -51,7 +51,7 @@ switch ($request_method) {
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><a href="../admin/admin.php">
                         <i class="fa fa-user-astronaut"></i><?php echo $query['body']['user']['username']; ?></a></li>
-                <li><a href="add_article.php"><i class="fas fa-edit"></i>Create</a> </li>
+                <li><a href="../articles/add_article.php"><i class="fas fa-edit"></i>Create</a> </li>
             
                 <li class=""><i class="" ></i></li>
                 <li><a href="../logout.php"><i class="fa fa-power-off fa-1x"></i>log out</a></li>
@@ -90,7 +90,7 @@ switch ($request_method) {
                                         <a class="dropdown-item" href="#"></a>
                                         <a class="dropdown-item" style="color: #00fffd" href="../articles/detail_article.php?ID=<?php echo $arr['id'] ?>">DETAIL</a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item " style="color:red;" href="delete_article.php?ID=<?php echo $arr['id'] ?>">DELETE</a>
+                                        <a class="dropdown-item " style="color:red;" href="../articles/delete_article.php?ID=<?php echo $arr['id'] ?>">DELETE</a>
                                     </div>
                                 </div>
                             </th>

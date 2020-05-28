@@ -32,8 +32,10 @@ function redirect_to_profile_page()
 }
 
 $request_method = $_SERVER['REQUEST_METHOD'];
+$user = array();
 if ($request_method == 'GET') {
     $query = $repository->find_user_with_id($_SESSION['login_ID']);
+    $user = $query['body']['user'];
 }
 
 if ($request_method == 'POST') {
@@ -123,83 +125,78 @@ if ($request_method == 'POST') {
     <meta name="author" content="felixmuthui32@gmail.com">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
-    <link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
-    <link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
+    <link href="../res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen,projection">
+    <link href="../res/vendor/materialize/css/materialize.css" rel="stylesheet" media="screen,projection">
     <!-- reference your copy Font Awesome here (from our CDN or by hosting yourself) -->
     <link href="../res/vendor/fontawesome/css/fontawesome.css" rel="stylesheet">
     <link href="../res/vendor/fontawesome/css/brands.css" rel="stylesheet">
     <link href="../res/vendor/fontawesome/css/solid.css" rel="stylesheet">
-    <link href="../res/css/main.css" rel="stylesheet"  media="screen,projection">
-    <title>Blog</title>
+    <link href="../res/css/main.css" rel="stylesheet" media="screen,projection">
+    <title>Article</title>
+    <style type="text/css">
+        .fa-comments {
+            color: grey;
+        }
+    </style>
 </head>
 <body>
 <header>
-    <nav>
-        <div class="nav-wrapper p-2">
-            <a href="<?php echo $_SERVER['SERVER_NAME']; ?>"> site</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="../admin/admin.php">
-                        <i class="fa fa-user-astronaut"></i><?php echo $query['body']['user']['username']; ?></a></li>
-                <li class=""><i class="" ></i></li>
-                <li><a href="../logout.php"><i class="fa fa-power-off fa-1x"></i>log out</a></li>
-            </ul>
-        </div>
-    </nav>
+  <?php include_once '../partials/navbar.php' ?>
 </header>
 <section>
     <div class="container">
         <div class="row" >
-            <div class="col-md-3"></div>
-            <div class="col-md-7 mt-5">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
                  <div class="card">
-                     <form enctype="multipart/form-data" method="POST" action="add_article.php">
-                         <fieldset>
-                             <div class="card-title">
-                                 <legend>Create an article</legend>
-                             </div>
-                             <div class="card-content">
-                                 <div class="file-field input-field" id="inputPhoto">
-                                     <div class="btn">
-                                         <label for="productPhoto" class="text-light"><i class="fas fa-file-upload"></i> Upload a picture</label>
-                                         <input id="productPhoto" type="file" name="article_file" class="">
-                                     </div>
-                                     <div class="file-path-wrapper">
-                                         <input class="file-path validate" type="text" />
-                                     </div>
+                     <div class="">
+                         <img class="card-img" src="../res/img/welcome_image.jpg">
+                         <div class="card-title">
+                             <h6 class="text-center">Share your story <i class="fas fa-comments"></i></h6>
+                         </div>
+                     </div>
+                     <div class="card-content">
+                             <form enctype="multipart/form-data" method="POST" action="add_article.php">
+                             <div class="file-field input-field" id="file">
+                                 <div class="btn btn-small">
+                                     <label for="productPhoto" class="text-light"><i class="fas fa-file-upload"></i> Upload a picture</label>
+                                     <input id="productPhoto" type="file" name="article_file" class=""></div>
+                                 <div class="file-path-wrapper">
+                                     <input class="file-path validate" type="text" />
+                                     <span class="helper-text grey-text text-lowercase" data-error="" data-success="">upload an image to go with your story</span>
                                  </div>
-                                     <div class="input-field ">
-                                         <input id="inputTitle" type="text" name="headline" class="validate">
-                                         <label for="inputTitle">Headline</label>
-                                         <span class="helper-text text-danger" data-error="wrong" data-success=""></span>
-                                     </div>
-                                     <div class="input-field ">
+                             </div>
+                             <div class="input-field ">
+                                 <input id="inputTitle" type="text" name="headline" class="validate">
+                                 <label for="inputTitle">Headline</label>
+                                 <span class="helper-text grey-text" data-error="" data-success="">A short descriptive title for the readers</span>
+                             </div>
+                             <div class="input-field ">
                                 <textarea id="inputDescription" name="content"
                                           data-length="250" class="materialize-textarea">
                                 </textarea>
-                                         <label for="inputDescription">Content</label>
-                                         <span class="helper-text text-danger" data-error="wrong" data-success=""></span>
-                                     </div>
-                                     <div class="input-field">
-                                         <input type="submit" id="inputSubmit" class="btn btn-sm right">
-                                     </div>
+                                 <label for="inputDescription">Content</label>
+                                 <span class="helper-text grey-text" data-error="" data-success="">Words not more than 250 should be nice</span>
                              </div>
-                         </fieldset>
-                     </form>
+                             <div class="input-field">
+                                 <div class="right">
+                                     <i class="fa fa-share"></i>
+                                     <input type="submit" id="inputSubmit" class="btn btn-sm btn-flat">
+                                 </div>
+                             </div>
+                             </form>
+                         </div>
                      <div class="card-action"></div>
                  </div>
-
-
-                
             </div>
             <div class="col-md-2"></div>
         </div>
     </div>
 </section>
-
 <script type="text/javascript" src="../res/vendor/jquery-3.4.1.js"></script>
 <script type="text/javascript" src="../res/vendor/popper.min.js"></script>
-<script type="text/javascript" src="../res/vendor/jquery.mobile-1.4.5.js"></script>
 <script type="text/javascript" src="../res/vendor/materialize/js/materialize.js"></script>
+<script type="text/javascript" src="../res/vendor/jquery.mobile-1.4.5.js"></script>
 <script type="text/javascript" src="../res/js/init.js"></script>
 </body>
 </html>
