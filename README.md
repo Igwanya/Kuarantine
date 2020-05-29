@@ -18,4 +18,8 @@
     *  composer dump-autoload --optimize
   #### Include into scripts
     * require_once __DIR__ . '../../vendor/autoload.php';
+    
+  #### Initial project setup to the git repo
+  * git remote add origin https://github.com/Igwanya/Kuarantine.git
+  *  git push -u origin master
    
