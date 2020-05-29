@@ -11,7 +11,7 @@ namespace Src\database;
 
 class DatabaseConnection
 {
-    private $APP_DB_NAME = 'cat2';   // remember to change the connection properties in mysqli.
+    private $APP_DB_NAME = 'kuarantine';   // remember to change the connection properties in mysqli.
     
     public $APP_DB_USERS_TABLE = 'users';
 
