@@ -1,30 +1,31 @@
 # FILE: cat2
 # DESCRIPTION: 
 #    Defines the structure of the database
-# 
+# 							
+#							website<https://www.kuarantine.co.ke>
 #							email<felixmuthui32@gmail>
 
-
 # Initialise the database
-CREATE DATABASE `cat2`;
-USE `cat2`;
+# FOREIGN KEY CONSTRAINTS MUST BE UNIQUE IN THE ENTIRE DATABASE!!
+CREATE DATABASE `kuarantine`;
+USE `kuarantine`;
 
-# DROP DATABASE `cat2`;
-
-# Create the user table
+# Create the user table structure
+#
 CREATE TABLE IF NOT EXISTS `users` ( 
-`id` INT(11) auto_increment ,
-`url` VARCHAR(250) NULL ,
-`username` VARCHAR(60) NULL , 
-`email` VARCHAR(60) NOT NULL , 
-`firstName` VARCHAR(60) NULL ,
-`lastName` VARCHAR(60) NULL ,
-`fullName` VARCHAR(60) NULL,
-`isAdmin` BOOLEAN NULL ,
-`passwordHash` VARCHAR(65) NOT NULL ,
-`created` DATETIME NULL ,
-`lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-`expiryDate` DATETIME NULL, 
+`id`          INT(11) auto_increment ,
+`url`         VARCHAR(255) NULL ,
+`username`    VARCHAR(60) NULL , 
+`email`       VARCHAR(60) NOT NULL , 
+`firstName`   VARCHAR(60) NULL ,
+`lastName`    VARCHAR(60) NULL ,
+`fullName`    VARCHAR(60) NULL,
+`isAdmin`     BOOLEAN NULL ,
+`bio`         varchar(255), 
+`password`    VARCHAR(65) NOT NULL ,
+`created`     DATETIME NOT NULL DEFAULT NOW() ,
+`lastUpdated` TIMESTAMP NOT NULL DEFAULT NOW() ,
+`expiryDate`  DATETIME NULL, 
  PRIMARY KEY (`id`)
  ) ENGINE = InnoDB;
 CREATE UNIQUE INDEX users_username_uindex ON users (username);
@@ -33,65 +34,211 @@ CREATE UNIQUE INDEX users_email_uindex ON users (email);
  # Create the articles table
  # Set::  ON update set null cascade ON delete cascade set null
  # so that when the users are deleted or updated the articles are not affected
+ # 
 CREATE TABLE IF NOT EXISTS `articles` (
-`id` INT auto_increment primary key,
-`url` varchar(250) null,
-`headline` varchar(70) NOT null,
-`content` varchar(200) null,
-`userID` int NOT NULL,
- constraint fk_author FOREIGN key (`userID`) REFERENCES users(`id`) ON update cascade ON delete cascade,
-`created` DATETIME NULL ,
-`lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
+`id`          INT auto_increment primary key,
+`url`         varchar(255) null,
+`headline`    varchar(70) NOT null,
+`content`     varchar(200) null,
+`userID`      int NOT NULL,
+ constraint `fk_author` FOREIGN key (`userID`) REFERENCES users(`id`) ON update cascade ON delete cascade,
+ INDEX(`userID`),
+`created`     DATETIME NOT NULL DEFAULT NOW() ,
+`lastUpdated` TIMESTAMP NOT NULL DEFAULT NOW() 
 )ENGINE = InnoDB;
+
+# Create the comments table
+# Set::  ON update set null cascade ON delete cascade set null
+# so that when the users are deleted or updated the articles are not affected
+# 
+
+CREATE TABLE IF NOT EXISTS `comments` (
+`id`          INT auto_increment primary key,
+`userID`          int NOT NULL,
+FOREIGN key (`userID`) REFERENCES users(`id`) ON update cascade ON delete cascade,
+`articleID`          int NOT NULL,
+constraint `fk_articleID` FOREIGN key (`articleID`) REFERENCES articles(`id`) ON update cascade ON delete cascade,
+INDEX (`userID`, `articleID`),
+`isRead`      bool NULL,
+`content`     varchar(255) null,
+`created`     DATETIME NOT NULL DEFAULT NOW() ,
+`lastUpdated` TIMESTAMP NOT NULL DEFAULT NOW() 
+)ENGINE = InnoDB;
+
+# Create the app table structure
+#
+CREATE TABLE IF NOT EXISTS `app` (
+`id`              INT auto_increment primary key,
+`isTermsAndConditionsAccepted` bool null,
+`applicationID`   varchar(90) null,
+`versionName`     varchar(50) NULL,
+`versionCode`     varchar(50) NULL,
+`userID`          int NOT NULL,
+`display`        varchar(70) NOT NULL ,
+`created` 		 DATETIME NOT NULL DEFAULT NOW() ,
+`lastUpdated` 	 TIMESTAMP NOT NULL DEFAULT NOW(),
+ INDEX(`userID`),
+ constraint `fk_installed_user` FOREIGN key (`userID`) REFERENCES users(`id`) ON update cascade ON delete restrict
+)ENGINE = InnoDB;
+
+# The categories table strucuture
+#
+
+CREATE TABLE IF NOT EXISTS `categories` (
+`id`            INT auto_increment primary key,
+`categoryName`  varchar(250) not null
+)ENGINE = InnoDB;
+
+# Create table products
+#
+
+CREATE TABLE IF NOT EXISTS `products` (
+`id`          INT auto_increment primary key,
+`url`         varchar(250) null,
+`title`       varchar(70) NOT null,
+`detail`      varchar(200) null,
+`categoryId`  int NOT NULL,
+`price`       decimal not null,
+ constraint `fk_category` FOREIGN key (`categoryId`) REFERENCES categories(`id`) ON update cascade ON delete cascade,
+`created`     DATETIME NOT NULL DEFAULT NOW() ,
+`lastUpdated` TIMESTAMP NOT NULL DEFAULT NOW() 
+)ENGINE = InnoDB;
+
+# The table for orders made by users
+#
+
+CREATE TABLE `productsOrder` (
+`id` INT NOT NULL auto_increment,
+`productCategoryId` INT NOT NULL,
+`productId`       INT NOT NULL,
+`userId`          INT NOT NULL,
+primary key(`id`),
+INDEX (`productCategoryId`, `productId`),
+INDEX (`userId`),
+foreign key (`productCategoryId`, `productId`)
+	references products(`categoryId`, `id`) ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (`userId`) REFERENCES users(`id`)
+)ENGINE=INNODB;
+
+# RESEARCH MORE ON SENDING LOGS TO TH SERVER
+# history table structure
+# action:: added a product
+# tableId:: the product id
+# TODO:: CREATING THIS TABLE LEADS TO AN ERROR
+#
+CREATE TABLE IF NOT EXISTS `activity` (
+`id`            INT auto_increment primary key,
+`action`          varchar(255) NOT NULL,
+`tableId`        int NOT NULL ,
+`userID`          int NOT NULL,
+`created`       DATETIME NOT NULL DEFAULT NOW() ,
+`lastUpdated`   TIMESTAMP NOT NULL DEFAULT NOW(),
+INDEX(`userId`),
+FOREIGN key (`userId`) REFERENCES users(`id`) ON update cascade ON delete cascade
+)ENGINE = InnoDB;
+
+# Create the notifications table
+# entity id :: 
+#	column relates to the related table
+# if a user posts an article the article id is stored in the entity id table
+# then you can get the details of the post by the entity id.
+# STRUCTURE:: 
+#  | id  | entityId  | userId  |  					content						          | 
+#  |  1  |    23     | 1       | This notification is about creating article 23(entityId) |
+#
+CREATE TABLE IF NOT EXISTS `notifications` (
+`id`              INT auto_increment primary key,
+`userID`          int NOT NULL,
+`entityId`        INT NOT NULL,
+`content`         varchar(250) NULL,
+`isRead`          bool NULL, 
+`created`         DATETIME NOT NULL DEFAULT NOW() ,
+`lastUpdated`     TIMESTAMP NOT NULL DEFAULT NOW(),
+INDEX (`entityId`),
+FOREIGN key (`userID`) REFERENCES users(`id`) ON update cascade ON delete cascade
+)ENGINE = INNODB;
+
 
 # Create the root user ME :)
  /**
  * Create the admin account
+ * username: felix
  * Password: Igwanya32
  */
- INSERT INTO `users` (`url`, `username`, `email`, `firstName`, `lastName`, `isAdmin`, `passwordHash`, `created`, `lastUpdated`)
+ INSERT INTO `users` ( `id`, `url`, `username`, `email`, `firstName`, `lastName`,`fullName`,  `isAdmin`, `bio`, `password`)
  VALUES
 (
+1,
 'img/Thumbnail.png',
-'admin',
+'felix',
 'felixmuthui32@gmail.com',
 'Felix', 
 'Muthui',
+'Felix Muthui',
 true, 
-'$2y$10$N6FfGndrdk0UcNvzPrgiTubW7OXT4FWVCP8vdUf20hlyAET9y06Oi',
-CURRENT_TIMESTAMP,
- CURRENT_TIMESTAMP);
- 
+'The root user the amazing all system admin for the site',
+'$2y$10$N6FfGndrdk0UcNvzPrgiTubW7OXT4FWVCP8vdUf20hlyAET9y06Oi'
+);
+
  # Create the initial article
+ # TODO:: column url has no data !!!
+ #
 INSERT INTO `articles` (
-`headline`, `content`, `userID`, `created`, `lastUpdated`)
+`id`, `headline`, `content`, `userID`)
 VALUES
-('Welcome to the quarantine app',
- 'Share you stories and get updated when i receive information',
- 1,
- CURRENT_TIMESTAMP,
- CURRENT_TIMESTAMP),
- ('Order goods from anywhere',
- 'Order groceries, gas to quarantine masks directly from your phone',
- 1,
- CURRENT_TIMESTAMP,
- CURRENT_TIMESTAMP);
+(
+1,
+'Welcome to the quarantine app',
+'Share you stories and get updated when information is sent out',
+ 1 ),
+ (
+ 2,
+ 'Order goods and serivces',
+ 'Order groceries, gas from the quarantine app directly from your phone or website',
+ 1 );
 
-# Create the app table
+# initialise the comments table data
 #
-CREATE TABLE IF NOT EXISTS `app` (
-`id` INT auto_increment primary key,
-`applicationID` varchar(90) null,
-`versionName` varchar(50) NULL,
-`versionCode`     varchar(50) NULL,
-`userID`      int,
- constraint fk_userID FOREIGN key (`userID`) REFERENCES users(`id`) ON update cascade ON delete cascade,
-`display` varchar(70) NULL ,
-`created` DATETIME NULL ,
-`lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);  
+INSERT INTO `comments` (`id`, `userId`, `articleID`, `isRead`, `content`) 	VALUES 
+(1, 1, 1, true, 'The app is beautiful and functional');
 
-INSERT INTO `app`(versionName, versionCode, userID, created) VALUES ("SNAPSHOT", "1.0.0", 1, current_timestamp());
+# initial data for the app table data
+# 
+INSERT INTO `app`( `id`, `isTermsAndConditionsAccepted`, `applicationId`, `versionName`, `versionCode`, `userID`, `display`) VALUES 
+(1, true, 'com.muthui.cat2',"SNAPSHOT", "1.0.0", 1, '1024x968');
+
+# Initial data for the categories table
+#
+INSERT INTO categories(`id`, `categoryName`) VALUES 
+('1','dress'), ('2', 'bottoms'), ('3', 'shoes');
+
+# Data for the products table
+#
+INSERT INTO `products`(`id`, `url`, `title`, `detail`, `categoryID`, `price`) VALUES
+ (1, '', 'An very nice dress', "Buy this awesome dress ", 1, 500),
+ (2, '', 'An affordable bottom', "Buy this while it si in stock now ", 2, 1500),
+ (3, '', 'A very nice shoe', "This shoe comes in all sizes", 3, 2000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# To wipe eveything SHIFT+DELETE
+#
+# DROP DATABASE `cat2`;
 
 select * from `app`;
 
@@ -116,37 +263,15 @@ SHOW CREATE TABLE `articles`;
 # DELETE FROM `users` where id=1;
 
 # Table category
-#
-CREATE TABLE IF NOT EXISTS `categories` (
-`id` INT auto_increment primary key,
-`categoryName` varchar(250) null
-)ENGINE = InnoDB;
 
-# Create table products
-#
-CREATE TABLE IF NOT EXISTS `products` (
-`id` INT auto_increment primary key,
-`url` varchar(250) null,
-`title` varchar(70) NOT null,
-`detail` varchar(200) null,
-`categoryID` int NOT NULL,
-`price` int null,
- constraint fk_category FOREIGN key (`categoryID`) REFERENCES categories(`id`) ON update cascade ON delete cascade,
-`created` DATETIME NULL ,
-`lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
-)ENGINE = InnoDB;
 
-# Test data for the categories table
-#
-INSERT INTO categories(categoryName) VALUES ('Smartphone'), ('SmartWatch');
+
 
 # Select all from categories
 #
 SELECT * FROM `categories`;
 
-# Data for the products table
-#
-INSERT INTO `products`(title, detail, categoryID, created, lastUpdated) VALUES ('Ipad', "An awesome phone",2, current_timestamp(), current_timestamp());
+
 
 # Select * from products table
 #
@@ -168,34 +293,11 @@ DROP TABLE IF EXISTS `products`;
 #
 
 
-# RESEARCH MORE ON SENDING LOGS TO TH SERVER
-# PROPOSED COLUMN::
-# `appid` int NOT NULL,
- # constraint fk_Id FOREIGN key (`appid`) REFERENCES app(`id`) ON update cascade ON delete cascade,
 
-CREATE TABLE IF NOT EXISTS `history` (
-`id` INT auto_increment primary key,
-`decription` varchar(250) null,
-
-`created` DATETIME NULL ,
-`lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
-)ENGINE = InnoDB;
 
 INSERT INTO `history`(action, id) VALUES ("Installed the Kuarantine app", 1);
 SELECT * FROM  `history`;
 DROP TABLE IF EXISTS `history`;
-
-
-# Create the notifications table
-#
-CREATE TABLE IF NOT EXISTS `notifications` (
-`id` INT auto_increment primary key,
-`title` varchar(250) not null,
-`content` varchar(250) NULL,
-`priority` varchar(250) NULL,
-`created` DATETIME NULL ,
-`lastUpdated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
-)ENGINE = InnoDB;
 
 INSERT INTO `notifications`(title,content,priority, created) VALUES ("Welcome", "You've installed the app", "INFO", current_timestamp());
 
