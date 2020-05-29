@@ -54,19 +54,7 @@ class Login{
     /**
      * @var array Use it to see what values are expected
      */
-    public $login_frm_inputs = array(
-        'id'             =>  '',
-        'url'            =>  '',
-        'username'       =>  '' ,
-        'email'          =>  '',
-        'password'       =>  '',
-        'first_name'     =>  '' ,
-        'last_name'      =>  '',
-        'full_name'      =>  '',
-        'is_admin'       => false,
-        'created'        =>  '',
-        'last_updated'   =>  ''
-    );
+    public $login_frm_inputs = array();
 
     private $login_frm_inputs_errors = array(
         "credentials_error"  => "",
@@ -110,6 +98,7 @@ class Login{
         $res = $stmt->get_result();
         $row = $res->fetch_assoc();
         if ($row['email'] != null){
+            $this->login_frm_inputs['login_method'] = "email";
             $this->login_frm_inputs['id']           = $row['id'];
              $this->login_frm_inputs['url']         = $row['url'];
             $this->login_frm_inputs['email']        = $row['email'];
@@ -118,9 +107,10 @@ class Login{
             $this->login_frm_inputs['last_name']    = $row['lastName'];
             $this->login_frm_inputs['full_name']    = $row['fullName'];
             $this->login_frm_inputs['is_admin']     = $row['isAdmin'];
+            $this->login_frm_inputs['bio']          = $row['bio'];
             $this->login_frm_inputs['created']      = $row['created'];
             $this->login_frm_inputs['last_updated'] = $row['lastUpdated'];
-            $this->login_frm_inputs['password']     = $row['passwordHash'];
+            $this->login_frm_inputs['password']     = $row['password'];
             if (!isset($_SESSION['is_admin']) || isset($_SESSION['is_admin']) ) {
                 $_SESSION['is_admin']                   = $row['isAdmin'];
             }
@@ -129,7 +119,7 @@ class Login{
             }
             $this->login_frm_inputs_errors['credentials_error'] = "";
         } else {
-            $this->login_frm_inputs_errors['credentials_error'] = 'Email address does not exist';
+            $this->login_frm_inputs_errors['credentials_error'] = 'The email address does not exist';
         }
         return $this->login_frm_inputs_errors['credentials_error'];
     }
@@ -152,17 +142,19 @@ class Login{
         $res = $stmt->get_result();
         $row = $res->fetch_assoc();
         if ($row['username'] != null) {
+            $this->login_frm_inputs['login_method'] = "username";
             $this->login_frm_inputs['id']           = $row['id'];
-            $this->login_frm_inputs['url']         = $row['url'];
+            $this->login_frm_inputs['url']          = $row['url'];
             $this->login_frm_inputs['username']     = $row['username'];
             $this->login_frm_inputs['email']        = $row['email'];
             $this->login_frm_inputs['first_name']   = $row['firstName'];
             $this->login_frm_inputs['last_name']    = $row['lastName'];
             $this->login_frm_inputs['full_name']    = $row['fullName'];
             $this->login_frm_inputs['is_admin']     = $row['isAdmin'];
+            $this->login_frm_inputs['bio']          = $row['bio'];
             $this->login_frm_inputs['created']      = $row['created'];
             $this->login_frm_inputs['last_updated'] = $row['lastUpdated'];
-            $this->login_frm_inputs['password']     = $row['passwordHash'];
+            $this->login_frm_inputs['password']     = $row['password'];
             if (!isset($_SESSION['is_admin']) || isset($_SESSION['is_admin']) ) {
                 $_SESSION['is_admin']                   = $row['isAdmin'];
             }
@@ -171,7 +163,7 @@ class Login{
             }
             $this->login_frm_inputs_errors['credentials_error'] = "";
         } else {
-            $this->login_frm_inputs_errors['credentials_error'] = 'No user with that username exists. ';
+            $this->login_frm_inputs_errors['credentials_error'] = 'The username does not exists. ';
         }
         return $this->login_frm_inputs_errors['credentials_error'];
     }
@@ -197,10 +189,10 @@ class Login{
     }
 
     public function perform_password_check(){
-        if (password_verify($this->getPassword(), $this->login_frm_inputs['password'])){
+        if (!empty($this->login_frm_inputs['password']) && password_verify($this->getPassword(), $this->login_frm_inputs['password'])){
             $this->login_frm_inputs_errors['password_error'] = "";
         } else {
-            $this->login_frm_inputs_errors['password_error'] = "Incorrect password";
+            $this->login_frm_inputs_errors['password_error'] = "Incorrect password entered";
         }
         return $this->login_frm_inputs_errors['password_error'];
     }
