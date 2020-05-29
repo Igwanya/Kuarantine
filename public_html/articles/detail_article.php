@@ -56,7 +56,7 @@ switch ($request_method) {
             color: red;
         }
         .fa-edit {
-          
+            color: dodgerblue;
         }
         .fa-check-circle {
             color: #0D47A1;
