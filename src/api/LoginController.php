@@ -18,7 +18,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: access");
 header("Access-Control-Allow-Methods: POST");
 header("Content-Type: application/json; charset=UTF-8");
-header("Content-Type: application/x-www-form-urlencoded");
+//header("Content-Type: application/x-www-form-urlencoded");
 header("Accept: multipart/form-data");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 $requestMethod = $_SERVER["REQUEST_METHOD"];
@@ -27,7 +27,6 @@ if ($requestMethod == 'POST')
     $result = array(
         "status"    => "",
         "body"      => array(
-            "user" => array()
         ),
         "error"     => array(
             "username_or_email_error" => "",
@@ -42,19 +41,25 @@ if ($requestMethod == 'POST')
         $login->setPassword($data->password);
         $result['error']['username_or_email_error'] = $login->perform_username_or_email_check();
         $result['error']['password_error']          = $login->perform_password_check();
+    } else {
+        http_response_code(404);
+        $result['error']['username_or_email_error'] = $login->perform_username_or_email_check();
+        $result['error']['password_error']          = $login->perform_password_check();
+        echo json_encode(array($result));
     }
     if (empty( $result['error']['username_or_email_error']) &&
         empty($result['error']['password_error'] )){
         http_response_code(200);
         $result['status'] = 'Login successful';
-        $result['body']['user']  = $login->getLoginFrmInputs();
+        $result['body']['user_id']  = $login->getLoginFrmInputs()['id'];
+        $result['body']['login_method']  = $login->getLoginFrmInputs()['login_method'];
         $result['error']   = array();
     } else {
         http_response_code(404);
         $result['status'] = 'Login unsuccessful';
 //        exit("Login details has errors");
     }
-    echo json_encode($result);
+    echo json_encode(array($result));
 } else{
     http_response_code(403);
     exit($_SERVER['REQUEST_METHOD']." Request failed: Api calls accepted only");
