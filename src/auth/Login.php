@@ -11,7 +11,6 @@ require_once __DIR__ . '../../../vendor/autoload.php';
 
 use Src\database\DatabaseConnection;
 use Src\models\User;
-use function Src\redirect_to_profile_page;
 
 class Login{
     private $username_or_email;
@@ -23,6 +22,7 @@ class Login{
     {
         if (!empty($this->username_or_email))
             return $this->username_or_email;
+        return $this->username_or_email;
     }
 
     /**
@@ -40,6 +40,7 @@ class Login{
     {
         if (!empty($this->password))
             return $this->password;
+        return $this->username_or_email;
     }
 
     /**
@@ -98,7 +99,6 @@ class Login{
         $res = $stmt->get_result();
         $row = $res->fetch_assoc();
         if ($row['email'] != null){
-            $this->login_frm_inputs['login_method'] = "email";
             $this->login_frm_inputs['id']           = $row['id'];
              $this->login_frm_inputs['url']         = $row['url'];
             $this->login_frm_inputs['email']        = $row['email'];
@@ -142,7 +142,6 @@ class Login{
         $res = $stmt->get_result();
         $row = $res->fetch_assoc();
         if ($row['username'] != null) {
-            $this->login_frm_inputs['login_method'] = "username";
             $this->login_frm_inputs['id']           = $row['id'];
             $this->login_frm_inputs['url']          = $row['url'];
             $this->login_frm_inputs['username']     = $row['username'];
@@ -183,17 +182,19 @@ class Login{
             &&  filter_var($this->getUsernameOrEmail(), FILTER_SANITIZE_STRING)){
             return $this->perform_username_check($this->getUsernameOrEmail());
         } else if (empty($this->getUsernameOrEmail())) {
-            $this->login_frm_inputs_errors['credentials_error'] = 'Enter a valid username or email address';
+            $this->login_frm_inputs_errors['credentials_error'] = 'The username or email address field is empty';
         }
         return $this->login_frm_inputs_errors['credentials_error'];
     }
 
     public function perform_password_check(){
-        if (!empty($this->login_frm_inputs['password']) && password_verify($this->getPassword(), $this->login_frm_inputs['password'])){
-            $this->login_frm_inputs_errors['password_error'] = "";
-        } else {
-            $this->login_frm_inputs_errors['password_error'] = "Incorrect password entered";
+        if (empty($this->getPassword())) {
+            $this->login_frm_inputs_errors['password_error'] = "The password field is empty.";
         }
+        if (!empty($this->login_frm_inputs['password']) &&
+            !password_verify($this->getPassword(), $this->login_frm_inputs['password'])){
+                $this->login_frm_inputs_errors['password_error'] = "Incorrect password entered.";
+            }
         return $this->login_frm_inputs_errors['password_error'];
     }
 
