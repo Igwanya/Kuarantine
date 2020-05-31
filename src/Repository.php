@@ -65,11 +65,12 @@ class Repository
                   "url"           => $row["url"],
                   "username"      => $row["username"],
                   "email"         => $row["email"],
-                  "first_name"     => $row["firstName"],
+                  "first_name"    => $row["firstName"],
                   "last_name"     => $row["lastName"],
                   "full_name"     => $row["fullName"],
-                  "is_admin"      => ($row["isAdmin"]) ? true : false,
-                  "password"      => $row["passwordHash"],
+                  "bio"           => $row["bio"],
+                  "is_admin"      => $row["isAdmin"],
+                  "password"      => $row["password"],
                   "created"       => $row["created"],
                   "last_updated"  => $row["lastUpdated"],
               );
@@ -125,8 +126,9 @@ class Repository
                     "first_name"    => $row["firstName"],
                     "last_name"     => $row["lastName"],
                     "full_name"     => $row["fullName"],
+                    "bio"           => $row["bio"],
                     "is_admin"      => $row["isAdmin"],
-                    "password"      => $row["passwordHash"],
+                    "password"      => $row["password"],
                     "created"       => $row["created"],
                     "last_updated"  => $row["lastUpdated"]
                 )
@@ -180,8 +182,9 @@ class Repository
                     "first_name"    => $row["firstName"],
                     "last_name"     => $row["lastName"],
                     "full_name"     => $row["fullName"],
+                    "bio"           => $row["bio"],
                     "is_admin"      => $row["isAdmin"],
-                    "password"      => $row["passwordHash"],
+                    "password"      => $row["password"],
                     "created"       => $row["created"],
                     "last_updated"  => $row["lastUpdated"]
                 )
@@ -228,14 +231,15 @@ class Repository
             $result["body"]    = array(
                 "user"   => array(
                     "id"           => $row["id"],
-                    "url"           => $row["url"],
+                    "url"          => $row["url"],
                     "username"     => $row["username"],
                     "email"        => $row["email"],
                     "firstName"    => $row["firstName"],
                     "lastName"     => $row["lastName"],
                     "fullName"     => $row["fullName"],
+                    "bio"          => $row["bio"],
                     "isAdmin"      => $row["isAdmin"],
-                    "passwordHash" => $row["passwordHash"],
+                    "password" => $row["password"],
                     "created"      => $row["created"],
                     "lastUpdated"  => $row["lastUpdated"]
                 )
@@ -254,14 +258,14 @@ class Repository
      * @param $firstName
      * @param $lastName
      * @param $fullName
+     * @param  $bio
      * @param $isAdmin
      * @param $passwordHash
      * @return array
      */
     public function add_user_to_db($url, $username, $email, $firstName,
-                                   $lastName, $fullName, $isAdmin, $passwordHash)
+                                   $lastName, $fullName, $bio, $isAdmin, $passwordHash)
     {
-        $today = gmdate("n/j/Y g:i:s A") ; // today's date
         $result = array(
             "status"  => "",
             "body"    => array(),
@@ -269,13 +273,13 @@ class Repository
         );
         /* Prepared statement, stage 1: prepare */
         if (!($stmt = $this->db->prepare("
-        INSERT INTO users(url, username, email, firstName, lastName, fullName, isAdmin,
-         passwordHash, created, lastUpdated ) VALUES (?,?,?,?,?,?,?,?,?,?)"))) {
+        INSERT INTO users(url, username, email, firstName, lastName, fullName, bio, isAdmin,
+         password ) VALUES (?,?,?,?,?,?,?,?,?)"))) {
             trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
         }
         /* Prepared statement, stage 2: bind and execute */
-        if (!$stmt->bind_param("ssssssssss",$url, $username, $email,
-            $firstName, $lastName, $fullName,   $isAdmin, $passwordHash, $today , $today )) {
+        if (!$stmt->bind_param("sssssssss",$url, $username, $email,
+            $firstName, $lastName, $fullName, $bio,  $isAdmin, $passwordHash)) {
             trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
         }
         if (!$stmt->execute()) {

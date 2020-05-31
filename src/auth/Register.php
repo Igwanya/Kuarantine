@@ -165,6 +165,25 @@ class Register{
 
     private $last_name;
 
+
+    private $api_registration_request;
+
+    /**
+     * @param bool $api_registration_request
+     */
+    public function setApiRegistrationRequest($api_registration_request)
+    {
+        $this->api_registration_request = $api_registration_request;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getApiRegistrationRequest()
+    {
+        return $this->api_registration_request;
+    }
+
     /**
      * Checks the username if it already exists.
      * @return string
@@ -231,9 +250,11 @@ class Register{
         $user = new User();
         $user->set_email($this->getEmail());
         $user->set_password_hash($this->getPassword());
-        $result =  $repo->add_user_to_db($this->url,
-            $this->m_username, $this->m_email, $this->first_name,
-            $this->last_name, $this->full_name, false, $user->get_password_hash());
+        if ($this->getApiRegistrationRequest() == 1) {
+            $result =  $repo->add_user_to_db($this->url, $this->m_username, $this->m_email, $this->first_name, $this->last_name, $this->full_name, null,false, $user->get_password_hash());
+        }
+
+        $result =  $repo->add_user_to_db($this->url, $this->m_username, $this->m_email, $this->first_name, $this->last_name, $this->full_name, null,false, $user->get_password_hash());
         if (empty($result['error'])){
             $user = $repo->find_user_with_email($this->m_email)['body']['user'];
             if (!isset($_SESSION['is_authenticated'])

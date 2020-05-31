@@ -30,40 +30,45 @@ if ($requestMethod == 'POST')
     $result = array(
         "status"    => "",
         "body"      => array(),
-        "error"     => array(
-            "username_error"       => "",
-            "email_error"          => ""
-        )
+        "error"     => array()
     );
     // GET DATA FORM REQUEST
     $data = json_decode(file_get_contents("php://input"));
-    $repository = new Repository();
-    $register = new Register();
-    if (!empty($data)){
-        $register->setUsername($data->username);
-        $register->setEmail($data->email);
-        $result['error']['username_error'] = $register->perform_username_check();
-        $result['error']['email_error']    = $register->perform_email_check();
-        $register->set_full_name($data->full_name);
-        $register->setPassword($data->password);
-        if (empty($result['error']['username_error'])
-            && empty($result['error']['email_error']))  {
-            $result = $register->register_user();
-        }
-    }else{
-       $result['status'] = "Empty fields detected | username | 
-       email | full_name | password ";
-       http_response_code(404);
+
+    if (empty($data)){
+        $result['status'] = "Empty fields detected,  expected | username | email | full_name | password ";
+        http_response_code(404);
+        echo json_encode($result);
+        exit(0);
     }
 
-    if (empty($result['error']['username_error'])
-        && empty($result['error']['email_error'])) {
-        $result['status'] = "Sign up successful";
-         $result['body']  = $repository->find_user_with_email($data->email)['body'];
-        $result['error']  = array();
-    } else {
-        http_response_code(404);
-        $result['status'] = "Sign up unsuccessful";
+    if (!empty($data) && isset($data->username) && isset($data->email) &&
+        isset($data->full_name) && isset($data->password)) {
+        $repository = new Repository();
+        $register = new Register();
+        $register->setApiRegistrationRequest(true);
+        $register->setUsername($data->username);
+        $register->setEmail($data->email);
+        $register->set_full_name($data->full_name);
+        $register->setPassword($data->password);
+        $result['error']['username_error'] = $register->perform_username_check();
+        $result['error']['email_error']    = $register->perform_email_check();
+        if (!empty($result['error']['username_error']) ||
+            !empty($result['error']['email_error']) ){
+            http_response_code(404);
+            $result['status'] = "Sign up unsuccessful";
+            echo json_encode($result);
+            exit(0); 
+        } else {
+            http_response_code(201);
+            $register->register_user();
+            $user = $repository->find_user_with_email($data->email)['body']['user'];
+            $result['body']   = array("user_id" => $user['id']);
+            $result['status'] = "Sign up successful";
+            echo json_encode($result);
+//            exit(0);
+        }
+
     }
-    echo json_encode($result);
+
 }
