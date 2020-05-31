@@ -283,7 +283,7 @@ class Repository
             trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
         }
         if (!$stmt->execute()) {
-            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
+//            trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
             $result["status"]  = "User insertion failed";
             $result["error"]   =  $stmt->error;
         } else {

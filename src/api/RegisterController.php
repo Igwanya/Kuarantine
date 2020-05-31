@@ -66,7 +66,7 @@ if ($requestMethod == 'POST')
             $result['body']   = array("user_id" => $user['id']);
             $result['status'] = "Sign up successful";
             echo json_encode($result);
-//            exit(0);
+            exit(0);
         }
 
     }
