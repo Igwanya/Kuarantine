@@ -95,7 +95,9 @@ class Repository
             "body"    => array(
                 "user"    => array()
             ),
-            "error"   => array()
+            "error"   => array(
+                "query_error"  => ""
+            )
         );
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id LIKE ?");
         if (!($stmt))
@@ -110,7 +112,6 @@ class Repository
         if (!$stmt->execute()) {
             trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error,
                 E_CORE_ERROR);
-            $result['status'] = "No user with that id exists";
             $result["error"]  =  $stmt->error;
         }
         $res = $stmt->get_result();
@@ -136,6 +137,7 @@ class Repository
             return $result;
         } else {
             $result['status'] = "No user with that id exists";
+            $result["error"]['query_error']  =  "invalid id in query passed.";
         }
         return $result;
     }
@@ -292,33 +294,22 @@ class Repository
         return $result;
     }
 
-    /**
-     * @param $id
-     * @param $url
-     * @param $username
-     * @param $email
-     * @param $firstName
-     * @param $lastName
-     * @param $fullName
-     * @return array
-     */
-    public function update_user_to_db($id, $url, $username, $email, $firstName,
-                                      $lastName, $fullName)
+
+    public function update_user_to_db($id, $url, $username, $email, $first_name, $last_name, $full_name, $bio)
     {
         $result = array(
             "status"  => "",
             "body"    => array(),
             "error"   => array()
         );
-        $sql = "UPDATE users SET url=?, username=?, email=?, firstName=?, lastName=?, 
-                fullName=?, lastUpdated=NOW()  WHERE id=?";
-//        $lastUpdated = gmdate("n/j/Y g:i:s A"); // today's date
+        $sql = "UPDATE users SET url=?, username=?, email=?, firstName=?, lastName=?, fullName=?, bio=?, lastUpdated=? WHERE id=?";
+        date_default_timezone_set("Africa/Nairobi");
+        $dt = date("Y-m-d h:i:s");
         /* Prepared statement, stage 1: prepare */
         if (!$stmt = $this->db->prepare($sql)){
             trigger_error("Prepare failed: (" . $this->db->errno . ") " . $this->db->error);
         }
-        if (!$stmt->bind_param("ssssssi",$url,$username,  $email, $firstName, $lastName,
-            $fullName, $id)){
+        if (!$stmt->bind_param("ssssssssi",$url,$username,  $email, $first_name, $last_name, $full_name, $bio, $dt, $id)){
             trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
             }
         /* Prepared statement, stage 2: bind and execute */
@@ -416,7 +407,7 @@ class Repository
             trigger_error("Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error);
         }
         if (!$stmt->execute()) {
-            $result["error"]  = $stmt->error;
+            $result["error"]  = "Invalid id parameter passed";
             trigger_error("Execute failed: (" . $stmt->errno . ") " . $stmt->error);
         } else {
             $result["status"] = "Deleted successful";
