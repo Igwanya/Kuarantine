@@ -9,7 +9,7 @@
 namespace Src;
 
 require_once __DIR__ . '../vendor/autoload.php';
-
+include_once "public/utils.php";
 session_start();
 
 $request_method = $_SERVER["REQUEST_METHOD"];
@@ -47,12 +47,12 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
     <meta name="author" content="felixmuthui32@gmail.com">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
-    <link href="public_html/res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet"  media="screen,projection">
-    <link href="public_html/res/vendor/materialize/css/materialize.css" rel="stylesheet"  media="screen,projection">
-    <link href="public_html/res/vendor/fontawesome/css/fontawesome.css" rel="stylesheet">
-    <link href="public_html/res/vendor/fontawesome/css/brands.css" rel="stylesheet">
-    <link href="public_html/res/vendor/fontawesome/css/solid.css" rel="stylesheet">
-    <link href="public_html/res/css/main.css" rel="stylesheet"  media="screen,projection">
+    <link href="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/vendor/bootstrap/css/bootstrap.css" rel="stylesheet" media="screen,projection">
+    <link href="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/vendor/materialize/css/materialize.css" rel="stylesheet" media="screen,projection">
+    <link href="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/vendor/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/vendor/fontawesome/css/brands.css" rel="stylesheet">
+    <link href="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/vendor/fontawesome/css/solid.css" rel="stylesheet">
+    <link href="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/css/main.css" rel="stylesheet" media="screen,projection">
     <title>Kuarantine</title>
 </head>
 <body>
@@ -60,16 +60,16 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
     <div class="nav-wrapper container">
         <a id="logo-container" href="/" class="brand-logo">Logo</a>
         <ul class="right hide-on-med-and-down" id="navList">
-            <li><a href="public_html/featured.php" id="indexNavLinkFeatured">Featured</a></li>
-            <li><a href="public_html/products.php" id="indexNavLinkProducts">Products</a></li>
-            <li><a href="public_html/articles.php" id="indexNavLinkArticles">Articles</a></li>
-            <li><a href="#" id="indexNavLinkAbout">About</a></li>
-            <li><a href="#" id="indexNavLinkContact">Contact</a></li>
+            <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/featured.php" id="indexNavLinkFeatured">Featured</a></li>
+            <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/products.php" id="indexNavLinkProducts">Products</a></li>
+            <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/articles.php" id="indexNavLinkArticles">Articles</a></li>
+            <li><a href="#about" id="indexNavLinkAbout">About</a></li>
+            <li><a href="#contact" id="indexNavLinkContact">Contact</a></li>
             <?php if ( !isset($_SESSION["is_authenticated"]) && !isset($_SESSION["login_ID"]) ) {?>
                 <li>
                     <ul>
-                        <li><a href="public_html/login.php" id="indexLinkLogin"><i class="fas fa-sign-in-alt fa-1x"></i> Login</a></li>
-                        <li><a href="public_html/auth/register.php" id="indexLinkRegister"><i class="fas fa-user fa-1x"></i> Register</a></li>
+                        <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/login.php" id="indexLinkLogin"><i class="fas fa-sign-in-alt fa-1x"></i> Login</a></li>
+                        <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/auth/register.php" id="indexLinkRegister"><i class="fas fa-user fa-1x"></i> Register</a></li>
                     </ul>
                 </li>
                 <?php } ?>
@@ -78,22 +78,22 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
                 <li>
                     <ul>
                         <li id="indexLinkProfile"></li>
-                        <li><a href="public_html/profile.php" id="indexLinkProfile"><i class="fas fa-user-circle fa-1x"></i> <?php echo $user['username']; ?></a></li>
+                        <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/profile.php" id="indexLinkProfile"><i class="fas fa-user-circle fa-1x"></i> <?php echo $user['username']; ?></a></li>
                     </ul>
                 </li>
             <?php } ?>
         </ul>
         <ul id="nav-mobile" class="sidenav">
             <li><a href="#featured" id="indexNavLinkFeatured">Featured</a></li>
-            <li><a href="public_html/products.php" id="indexNavLinkProducts">Products</a></li>
-            <li><a href="public_html/articles.php" id="indexNavLinkArticles">Articles</a></li>
+            <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/products.php" id="indexNavLinkProducts">Products</a></li>
+            <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/articles.php" id="indexNavLinkArticles">Articles</a></li>
             <li><a href="#" id="indexNavLinkAbout">About</a></li>
             <li><a href="#" id="indexNavLinkContact">Contact</a></li>
             <?php if ( !isset($_SESSION["is_authenticated"]) && !isset($_SESSION["login_ID"]) ) {?>
                 <li>
                     <ul>
-                        <li><a href="public_html/login.php" id="indexLinkLogin"><i class="fas fa-sign-in-alt fa-1x"></i> Login</a></li>
-                        <li><a href="public_html/auth/register.php" id="indexLinkRegister"><i class="fas fa-user fa-1x"></i> Register</a></li>
+                        <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/login.php" id="indexLinkLogin"><i class="fas fa-sign-in-alt fa-1x"></i> Login</a></li>
+                        <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/auth/register.php" id="indexLinkRegister"><i class="fas fa-user fa-1x"></i> Register</a></li>
                     </ul>
                 </li>
             <?php } ?>
@@ -102,8 +102,8 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
                 <li>
                     <ul>
 
-                        <li><a href="public_html/profile.php" id="indexLinkProfile"><i class="fas fa-user-circle"></i></a></li>
-                        <li><a href="public_html/profile.php" id="indexLinkProfile"> | <?php echo $user['username']; ?></a></li>
+                        <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/profile.php" id="indexLinkProfile"><i class="fas fa-user-circle"></i></a></li>
+                        <li><a href="<?php echo \Src\get_server_url_domain_name(); ?>/public/profile.php" id="indexLinkProfile"> | <?php echo $user['username']; ?></a></li>
                     </ul>
                 </li>
             <?php } ?>
@@ -127,7 +127,7 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
                 <br><br>
             </div>
         </div>
-        <div class="parallax"><img src="public_html/res/img/background1.jpg" alt="Unsplashed background img 1"></div>
+        <div class="parallax"><img src="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/img/background1.jpg" alt="Unsplashed background img 1"></div>
     </div>
 </header>
 
@@ -175,7 +175,7 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
             </div>
         </div>
     </div>
-    <div class="parallax"><img src="public_html/res/img/background2.jpg" alt="Unsplashed background img 2"></div>
+    <div class="parallax"><img src="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/img/background2.jpg" alt="Unsplashed background img 2"></div>
 </div>
 <!--Contact section-->
 <div class="container">
@@ -208,7 +208,7 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
             </div>
         </div>
     </div>
-    <div class="parallax"><img src="public_html/res/img/background3.jpg" alt="Unsplashed background img 3"></div>
+    <div class="parallax"><img src="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/img/background3.jpg" alt="Unsplashed background img 3"></div>
 </div>
 
 <footer class="page-footer teal">
@@ -221,7 +221,7 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
             <div class="col l3 s12">
                 <h5 class="white-text">Settings</h5>
                 <ul>
-                    <li><a class="white-text" href="public_html/admin/admin.php">Administrator</a></li>
+                    <li><a class="white-text" href="<?php echo \Src\get_server_url_domain_name(); ?>/public/admin/admin.php">Administrator</a></li>
                     <li><a class="white-text" href="#!">Link 2</a></li>
                     <li><a class="white-text" href="#!">Link 3</a></li>
                     <li><a class="white-text" href="#!">Link 4</a></li>
@@ -245,11 +245,11 @@ $uri   = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
     </div>
 </footer>
 <!--  Scripts-->
-<script src="public_html/res/vendor/jquery-3.4.1.js"></script>
-<script src="public_html/res/vendor/popper.min.js"></script>
-<script src="public_html/res/vendor/materialize/js/materialize.js"></script>
-<script src="public_html/res/vendor/jquery.mobile-1.4.5.js"></script>
-<script src="public_html/res/vendor/fontawesome/js/fontawesome.min.js"></script>
-<script src="public_html/res/js/init.js"></script>
+<script src="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/vendor/jquery-3.4.1.js"></script>
+<script src="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/vendor/popper.min.js"></script>
+<script src="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/vendor/materialize/js/materialize.js"></script>
+<script src="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/vendor/jquery.mobile-1.4.5.js"></script>
+<script src="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/vendor/fontawesome/js/fontawesome.min.js"></script>
+<script src="<?php echo \Src\get_server_url_domain_name(); ?>/public/res/js/init.js"></script>
 </body>
 </html>

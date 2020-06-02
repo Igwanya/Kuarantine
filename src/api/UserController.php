@@ -14,27 +14,57 @@ use Src\models\User;
 use Src\Repository;
 
 require_once __DIR__ . '../../../vendor/autoload.php';
+include_once "../../public/utils.php";
 
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = explode('/', $uri);
-
 $requestMethod = $_SERVER["REQUEST_METHOD"];
 $repository = new Repository();
+$result = array(
+    "status" => "",
+    "path"  => "",
+    "body"  => array(),
+    "error" => array()
+);
 switch ($requestMethod) {
     case 'GET':
-        $id = filter_input(INPUT_GET, 'ID');
-        $id = filter_var($id, FILTER_VALIDATE_INT);
-         if (!empty($id)){
-             echo json_encode($repository->find_user_with_id($id));
-         } else {
-             echo json_encode($repository->find_all_users());
-         }
+        $url_components = parse_url($_SERVER['REQUEST_URI']);
+        $result['path']  = \Src\get_server_url_domain_name().$url_components['path'];
+        parse_str($url_components['query'], $params);
+        $db_query = array();
+        if (isset($params['id']) && !empty($params['id'])){
+            $id = filter_var($params['id'], FILTER_VALIDATE_INT);
+            $db_query = $repository->find_user_with_id($id);
+            $result['status'] = $db_query['status'];
+            $result['body'] = $db_query['body'];
+            $result['error'] = $db_query['error'];
+            echo json_encode($result);
+        } else {
+            $db_query = $repository->find_all_users();
+            $result['body']   = $db_query['body'];
+            $result['error']  = $db_query['error'];
+            echo json_encode($result);
+        }
+
+
+
+//
+//        if (isset($DI) && !empty(filter_input(INPUT_GET, 'ID'))) {
+//            $id = filter_input(INPUT_GET, 'ID');
+//            $id = filter_var($id, FILTER_VALIDATE_INT);
+//            echo json_encode($repository->find_user_with_id($id));
+//            if (!empty($id)){
+//
+//            } else {
+//                echo json_encode();
+//            }
+//        }
+
         break;
     case 'POST':
         $result = array(

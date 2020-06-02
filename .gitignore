@@ -31,7 +31,7 @@
 
 # server logs
 logs/
-public_html/uploads
-public_html/res/vendor
+public/uploads
+public/res/vendor
 src/database/guari.sql
 src/database/scratch.sql
