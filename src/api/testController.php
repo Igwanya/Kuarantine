@@ -24,19 +24,24 @@ ini_set('html_errors', true);
 //header("Content-Type: application/json; charset=UTF-8");
 //header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
+//date_default_timezone_set("Africa/Nairobi");
+//echo date("Y-m-d h:i:s");
 $repository = new Repository();
 //print_r($_SESSION);
 //delete_all_session_variables();
 
+
+//echo \Src\validate_email("felixmuthui32@gmail.com");
+
 //echo \Src\get_server_url_domain_name();
 
-$url_components = parse_url($_SERVER['REQUEST_URI']);
-//print_r($url_components);
-parse_str($url_components['query'], $params);
-//print_r($params);
-if (isset($params['ID']) && !empty($params['ID'])){
-    echo $params['ID'];
-}
+//$url_components = parse_url($_SERVER['REQUEST_URI']);
+////print_r($url_components);
+//parse_str($url_components['query'], $params);
+////print_r($params);
+//if (isset($params['ID']) && !empty($params['ID'])){
+//    echo $params['ID'];
+//}
 
 
 //$result =  $repository->find_user_with_id(34);
