@@ -50,21 +50,6 @@ switch ($requestMethod) {
             $result['error']  = $db_query['error'];
             echo json_encode($result);
         }
-
-
-
-//
-//        if (isset($DI) && !empty(filter_input(INPUT_GET, 'ID'))) {
-//            $id = filter_input(INPUT_GET, 'ID');
-//            $id = filter_var($id, FILTER_VALIDATE_INT);
-//            echo json_encode($repository->find_user_with_id($id));
-//            if (!empty($id)){
-//
-//            } else {
-//                echo json_encode();
-//            }
-//        }
-
         break;
     case 'POST':
         $result = array(

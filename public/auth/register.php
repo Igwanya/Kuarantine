@@ -39,16 +39,24 @@ switch ($request_method) {
             !empty($full_name) && !empty($password) ) {
             $register->setUsername($username);
             $username_error = $register->perform_username_check();
-            $email  = filter_var($email, FILTER_SANITIZE_EMAIL);
-            $register->setEmail($email);
-            $email_error = $register->perform_email_check();
+
+            if (filter_var($email, FILTER_SANITIZE_EMAIL))  {
+                $email  = filter_var($email, FILTER_SANITIZE_EMAIL);
+                $register->setEmail($email);
+                $email_error = $register->perform_email_check();
+            } else {
+                $email_error = "Invalid email address" ;
+            }
+            
             $register->set_first_name($first_name);
             $register->set_last_name($last_name);
             $register->set_full_name($full_name);
             $register->setPassword($password);
             // if no errors in the form
-            if ($username_error == null && $email_error == null){
+            if (empty($username_error) && empty($email_error) && is_uploaded_file($_FILES['userfile']['tmp_name'])){
+                echo "executing ... ";
                 $uploaddir = $_SERVER["DOCUMENT_ROOT"]."/public/uploads/";
+//                $uploaddir = \Src\get_server_url_domain_name()."/public/uploads/";
                 if (mkdir($uploaddir.$username)){
                     $uploadfile = $uploaddir.basename($_FILES['userfile']['name']);
                     if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
@@ -60,7 +68,7 @@ switch ($request_method) {
                                 $url =  $uploaddir.$username.'/'.$files[2];
                                 $var = preg_split("#/#", $url);
 //                                $result_path = $var[3].'/'.$var[4].'/'.$var[5].'/'.$var[6];
-                                $result_path = $var[4].'/'.$var[5].'/'.$var[6];
+                                $result_path = '/public/'.$var[4].'/'.$var[5].'/'.$var[6];
                                 $register->setUrl($result_path);
                                 $register->register_user();
                             } else {
