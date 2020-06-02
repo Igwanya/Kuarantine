@@ -7,6 +7,8 @@
  */
 namespace Src;
 
+use Src\database\DatabaseConnection;
+
 require_once __DIR__ . '../../vendor/autoload.php';
 
 
@@ -27,7 +29,6 @@ function delete_directory($dir_name) {
         closedir($dir_handle);
         rmdir($dir_name);
     }
-
     return true;
 }
 
@@ -37,6 +38,11 @@ function delete_all_session_variables(){
     unset($_SESSION['login_ID']);
 }
 
+
+/**
+ * Retrieve the domain name of the server
+ * @return string The server url
+ */
 function get_server_url_domain_name()
 {
     $link = "http";
@@ -51,3 +57,71 @@ function get_server_url_domain_name()
     $link .= $_SERVER['HTTP_HOST'];
     return $link;
 }
+
+/**
+ * Checks the username if it already exists.
+ * @param $username
+ * @return string
+ */
+function validate_username ($username)
+{
+    $mysql  = new DatabaseConnection();
+    $conn = $mysql->get_db_connection();
+    $stmt =  $conn->prepare("SELECT username FROM users WHERE username LIKE ?");
+    if (!($stmt)){
+        trigger_error("Prepare failed: (" . $conn->errno . ") " .
+            $conn->error, E_USER_ERROR);
+    }
+    if (!$stmt->bind_param('s', $username)){
+        trigger_error("Binding parameters failed: (" . $stmt->errno . ") " .
+            $stmt->error, E_ERROR);
+    }
+    if (!$stmt->execute()) {
+        trigger_error("Execute failed: (" . $stmt->errno . ") " .
+            $stmt->error, E_CORE_ERROR);
+    }
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
+    if ($row['username'] != null )
+    {
+        return "Username already exists.";
+    }
+    return null;
+}
+
+/**
+ * Validates the email if found
+ * IF the email does not exist returns empty
+ * @param $email
+ * @return string The error if it exists
+ */
+function validate_email($email)
+{
+    $mysql  = new DatabaseConnection();
+    $conn = $mysql->get_db_connection();
+    $result = null;
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return "Invalid email address !";
+    }
+    $stmt =  $conn->prepare("SELECT email FROM users WHERE email LIKE ?");
+    if (!($stmt)){
+        trigger_error("Prepare failed: (" . $conn->errno . ") " .
+            $this->conn->error, E_USER_ERROR);
+    }
+    if (!$stmt->bind_param('s', $email)){
+        trigger_error("Binding parameters failed: (" . $stmt->errno . ") " .
+            $stmt->error, E_ERROR);
+    }
+    if ($stmt->execute()) {
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        if ($row['email'] != null ) {
+            $result = "Email already exists.";
+        }
+    }else {
+        trigger_error("Execute failed: (" . $stmt->errno . ") " .$stmt->error, E_CORE_ERROR);
+    }
+
+    return $result;
+}
+

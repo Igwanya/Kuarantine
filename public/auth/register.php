@@ -54,9 +54,7 @@ switch ($request_method) {
             $register->setPassword($password);
             // if no errors in the form
             if (empty($username_error) && empty($email_error) && is_uploaded_file($_FILES['userfile']['tmp_name'])){
-                echo "executing ... ";
                 $uploaddir = $_SERVER["DOCUMENT_ROOT"]."/public/uploads/";
-//                $uploaddir = \Src\get_server_url_domain_name()."/public/uploads/";
                 if (mkdir($uploaddir.$username)){
                     $uploadfile = $uploaddir.basename($_FILES['userfile']['name']);
                     if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
